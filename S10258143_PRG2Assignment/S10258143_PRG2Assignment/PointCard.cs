@@ -27,7 +27,9 @@ namespace S10258143_PRG2Assignment
         }
         public PointCard()
         {
-            
+            Points = 0;
+            PunchCard = 0;
+            Tier = "Ordinary";
         }
         public PointCard(int points, int punchCard)
         {
