@@ -59,7 +59,7 @@ namespace S10258143_PRG2Assignment
 
         public override string ToString()
         {
-            return;
+            return "\tOption: " + option + "\tScoops: " + scoops + "\tFlavours: " + flavours + "\tToppings: " + toppings;
         }
     }
 }

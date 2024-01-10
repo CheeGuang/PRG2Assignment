@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace S10258143_PRG2Assignment
 {
@@ -59,7 +60,7 @@ namespace S10258143_PRG2Assignment
         }
         public override string ToString()
         {
-            return;
+            return base.ToString() + "\tDipped: " + dipped; 
         }
     }
 }

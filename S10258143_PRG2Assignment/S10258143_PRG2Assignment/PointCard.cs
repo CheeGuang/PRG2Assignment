@@ -41,7 +41,7 @@ namespace S10258143_PRG2Assignment
         }
         public void RedeemPoints(int pts)
         {
-            
+            points -= pts;
         }
         public void Punch()
         {
@@ -54,7 +54,7 @@ namespace S10258143_PRG2Assignment
         }
         public override string ToString()
         {
-            return;
+            return "Points: " + points + "\tPunch Card: " + punchCard;
         }
     }
 }

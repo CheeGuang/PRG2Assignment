@@ -44,7 +44,7 @@ namespace S10258143_PRG2Assignment
         }
         public void ModifyIceCream(int index)
         {
-
+            
         }
         public void AddIceCream(IceCream iceCream)
         {
@@ -68,7 +68,7 @@ namespace S10258143_PRG2Assignment
         }
         public override string ToString()
         {
-            return;
+            return "\tID: " + id + "\tTime Received: " + timeReceived;
         }
     }
 }
