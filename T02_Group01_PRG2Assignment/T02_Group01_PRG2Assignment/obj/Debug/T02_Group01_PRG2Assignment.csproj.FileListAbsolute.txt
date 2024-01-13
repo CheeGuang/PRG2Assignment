@@ -1,0 +1,8 @@
+C:\Users\Jeffr\Desktop\Poly Things\Programming II\PRG2Assignment\T02_Group01_PRG2Assignment\T02_Group01_PRG2Assignment\bin\Debug\customers.csv
+C:\Users\Jeffr\Desktop\Poly Things\Programming II\PRG2Assignment\T02_Group01_PRG2Assignment\T02_Group01_PRG2Assignment\bin\Debug\T02_Group01_PRG2Assignment.exe.config
+C:\Users\Jeffr\Desktop\Poly Things\Programming II\PRG2Assignment\T02_Group01_PRG2Assignment\T02_Group01_PRG2Assignment\bin\Debug\T02_Group01_PRG2Assignment.exe
+C:\Users\Jeffr\Desktop\Poly Things\Programming II\PRG2Assignment\T02_Group01_PRG2Assignment\T02_Group01_PRG2Assignment\bin\Debug\T02_Group01_PRG2Assignment.pdb
+C:\Users\Jeffr\Desktop\Poly Things\Programming II\PRG2Assignment\T02_Group01_PRG2Assignment\T02_Group01_PRG2Assignment\obj\Debug\T02_Group01_PRG2Assignment.csproj.AssemblyReference.cache
+C:\Users\Jeffr\Desktop\Poly Things\Programming II\PRG2Assignment\T02_Group01_PRG2Assignment\T02_Group01_PRG2Assignment\obj\Debug\T02_Group01_PRG2Assignment.csproj.CoreCompileInputs.cache
+C:\Users\Jeffr\Desktop\Poly Things\Programming II\PRG2Assignment\T02_Group01_PRG2Assignment\T02_Group01_PRG2Assignment\obj\Debug\T02_Group01_PRG2Assignment.exe
+C:\Users\Jeffr\Desktop\Poly Things\Programming II\PRG2Assignment\T02_Group01_PRG2Assignment\T02_Group01_PRG2Assignment\obj\Debug\T02_Group01_PRG2Assignment.pdb
