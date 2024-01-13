@@ -21,6 +21,8 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using System.Net.Http;
 
 namespace T02_Group01_PRG2Assignment
 {
@@ -36,7 +38,7 @@ namespace T02_Group01_PRG2Assignment
 
             // Initialising Orders =====================================================
             List<Order> orders = new List<Order>();
-            //InitialiseOrdersData(orders);                 ------------ COMMENTED OUT TO ALLOW TESTING ---------------
+            //InitialiseOrdersData(orders);      ------------ COMMENTED OUT TO ALLOW TESTING (Feel free to uncomment) ------------ 
 
             // Q1 List all customers ===================================================
             ListAllCustomers(customers);
@@ -44,7 +46,7 @@ namespace T02_Group01_PRG2Assignment
             // Q2 List all orders ======================================================
             Queue<Customer> goldQueue = new Queue<Customer>();
             Queue<Customer> ordinaryQueue = new Queue<Customer>();
-            // ListAllGoldRegOrders(orders);                ------------COMMENTED OUT TO ALLOW TESTING ---------------
+            // ListAllGoldRegOrders(orders);     ------------ COMMENTED OUT TO ALLOW TESTING (Feel free to uncomment) ------------ 
 
             // Q3 Register a new customer ==============================================
             //RegisterCustomer();
@@ -56,6 +58,9 @@ namespace T02_Group01_PRG2Assignment
             // ============================================== Advanced Features =================================================
             // (a) Process an order and checkout ========================================
             ProcessOrderAndCheckout(goldQueue, ordinaryQueue);
+
+            // (c) Convert from SGD to specified Currency ===============================
+            //ConvertCurrency();                 ------------ COMMENTED OUT TO ALLOW TESTING (Do not leave it uncommented) -------
         }
 
         // Initialising Customers =======================================================
@@ -94,7 +99,7 @@ namespace T02_Group01_PRG2Assignment
                     string[] lineDetail = line.Split(',');
                     // Adding Order record to orders
                     orders.Add(new Order(Convert.ToInt32(lineDetail[0]), Convert.ToDateTime(lineDetail[1])));
-                    
+
                     line = sr.ReadLine();
                 }
             }
@@ -224,13 +229,13 @@ namespace T02_Group01_PRG2Assignment
         // Q4a Create a customer's order ===============================================
         static void CreateOrder(Dictionary<string, Customer> customers, Queue<Customer> goldQueue, Queue<Customer> ordinaryQueue)
         {
-            
+
             ListAllCustomers(customers);
 
             // Initilising memberID, customer, option, scoops, flavours, toppings and iceCream so to allow new customer object to be instanciated.
             int memberID;
             Customer customer;
-            
+
 
             // Enrsure MemberID is Valid and Exists
             while (true)
@@ -300,7 +305,7 @@ namespace T02_Group01_PRG2Assignment
 
                     // Check if memberId is in the list
                     // NOTE: Check with Jeffrey if customers dict key can be int instead of string
-                    if(!customers.ContainsKey(Convert.ToString(memberId)))
+                    if (!customers.ContainsKey(Convert.ToString(memberId)))
                     {
                         // If memberId do not exist in customers dict
                         throw new ArgumentException();
@@ -312,7 +317,7 @@ namespace T02_Group01_PRG2Assignment
                         // Break out of while loop
                         break;
                     }
-                    
+
                 }
                 catch
                 {
@@ -400,7 +405,7 @@ namespace T02_Group01_PRG2Assignment
                         // Break out of while loop
                         break;
 
-                    }  
+                    }
                 }
                 catch
                 {
@@ -454,7 +459,7 @@ namespace T02_Group01_PRG2Assignment
             switch (option)
             {
                 case 1:
-                    break; 
+                    break;
                 case 2:
                     break;
                 default:
@@ -550,7 +555,7 @@ namespace T02_Group01_PRG2Assignment
             // Check Pointcard status to determine if the customer can redeem points. If they cannot, skip to displaying the final bill amount
             if (currentPointCard.Tier.ToLower() != "ordinary")
             {
-                while(true)
+                while (true)
                 {
                     int noOfPointsToRedeem;
 
@@ -560,7 +565,7 @@ namespace T02_Group01_PRG2Assignment
                         Console.Write("Enter number of points to redeem to offset final bill (Enter 0 to not Redeem any points): ");
                         noOfPointsToRedeem = Convert.ToInt32(Console.ReadLine());
 
-                        if(noOfPointsToRedeem == 0)
+                        if (noOfPointsToRedeem == 0)
                         {
                             break;
                         }
@@ -585,7 +590,7 @@ namespace T02_Group01_PRG2Assignment
                         continue;
                     }
                 }
-                
+
             }
 
             // Display the final total bill amount
@@ -613,5 +618,131 @@ namespace T02_Group01_PRG2Assignment
             // Add this fulfilled order object to the customer’s order history
             currentCustomer.OrderHistory.Add(currentOrder);
         }
+
+        // (c) (Jeffrey) Convert from SGD to specified Currency ========================
+        static public void ConvertCurrency()
+        {
+            List<string> availableCurrencies = new List<string>() { "AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD", "AWG", "AZN", "BAM", "BBD", "BDT", "BGN", "BHD", "BIF", "BMD", "BND", "BOB", "BOV", "BRL", "BSD", "BTN", "BWP", "BYN", "BZD", "CAD", "CDF", "CHF", "CLF", "CLP", "CNY", "COP", "CRC", "CUC", "CUP", "CVE", "CZK", "DJF", "DKK", "DOP", "DZD", "EGP", "ERN", "ETB", "EUR", "FJD", "FKP", "GBP", "GEL", "GHS", "GIP", "GMD", "GNF", "GTQ", "GYD", "HKD", "HNL", "HRK", "HTG", "HUF", "IDR", "ILS", "INR", "IQD", "IRR", "ISK", "JMD", "JOD", "JPY", "KES", "KGS", "KHR", "KMF", "KPW", "KRW", "KWD", "KYD", "KZT", "LAK", "LBP", "LKR", "LRD", "LSL", "LTL", "LVL", "LYD", "MAD", "MDL", "MGA", "MKD", "MMK", "MNT", "MOP", "MRO", "MUR", "MVR", "MWK", "MXN", "MYR", "MZN", "NAD", "NGN", "NIO", "NOK", "NPR", "NZD", "OMR", "PAB", "PEN", "PGK", "PHP", "PKR", "PLN", "PYG", "QAR", "RON", "RSD", "RUB", "RWF", "SAR", "SBD", "SCR", "SDG", "SEK", "SGD", "SHP", "SLL", "SOS", "SRD", "SSP", "STD", "SVC", "SYP", "SZL", "THB", "TJS", "TMT", "TND", "TOP", "TRY", "TTD", "TWD", "TZS", "UAH", "UGX", "USD", "UYU", "UZS", "VEF", "VND", "VUV", "WST", "XAF", "XCD", "XOF", "XPF", "YER", "ZAR", "ZMW", "ZWL" };
+
+            // Displaying supported currencies
+            Console.WriteLine("Available Currencies to Convert To:");
+            for (int i = 1; i < availableCurrencies.Count; i++)
+            {
+                if (i % 20 == 0)
+                {
+                    Console.WriteLine(availableCurrencies[i]);
+                    continue;
+                }
+                Console.Write($"{availableCurrencies[i]}, ");
+
+            }
+
+            // Ensuring Currrency to convert to is valid
+            string convertTo;
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Enter currency you want to convert to: ");
+                    convertTo = Console.ReadLine();
+                    if (!availableCurrencies.Contains(convertTo.ToUpper()))
+                    {
+                        throw new ArgumentException();
+                    }
+                    break;
+
+                }
+                catch (Exception)
+                {
+
+                    Console.WriteLine("Please enter a valid country code to convert to."); ;
+                }
+            }
+
+            Console.Write("Enter amount: ");
+            double amount = Convert.ToDouble(Console.ReadLine());
+            double convertedAmount = GetConvertedAmount(amount, convertTo);
+
+            if (convertedAmount != -1)
+            {
+                Console.WriteLine($"Aount to pay in {convertTo.ToUpper()}: ${convertedAmount.ToString("0.00")}\n\n");
+            }
+            else
+            {
+                Console.WriteLine("API Call Unsuccessful.");
+            }
+        }
+
+        // Getting the Converted Amount by calling CurrencyBeacon's Convert API Endpoint
+        static public double GetConvertedAmount(double amount, string convertTo)
+        {
+            string apiKey = "ZP5D2ofy27CdcrkWlvFDFyHoZLDI40vR";
+
+            // Create an instance of HttpClient
+            HttpClient httpClient = new HttpClient();
+
+            // Specify the API endpoint URL
+            string apiUrl = $"https://api.currencybeacon.com/v1/convert?api_key={apiKey}&from=SGD&to={convertTo}&amount={amount}";
+            try
+            {
+                // Make an HTTP GET request
+                HttpResponseMessage response = httpClient.GetAsync(apiUrl).Result;
+
+                // Check if the response is successful (HTTP status code 200-299)
+                if (response.IsSuccessStatusCode)
+                {
+                    // Parse and process the response content here
+                    string responseBody = response.Content.ReadAsStringAsync().Result;
+                    Rootobject result = JsonConvert.DeserializeObject<Rootobject>(responseBody);
+                    return result.value;
+                }
+                else
+                {
+                    Console.WriteLine($"HTTP Error: {response.StatusCode}");
+                    // Handle the error response here if needed
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"HTTP Request Exception: {ex.Message}");
+                // Handle exceptions related to the request itself
+            }
+            finally
+            {
+                // Dispose of the HttpClient instance in the finally block
+                httpClient.Dispose();
+            }
+            return -1;
+        }
     }
+
+    // Created Classes to store Response from CurrencyBeacon's Convert API Endpoint
+    public class Rootobject
+    {
+        public Meta meta { get; set; }
+        public Response response { get; set; }
+        public int timestamp { get; set; }
+        public string date { get; set; }
+        public string from { get; set; }
+        public string to { get; set; }
+        public int amount { get; set; }
+        public float value { get; set; }
+    }
+
+    public class Meta
+    {
+        public int code { get; set; }
+        public string disclaimer { get; set; }
+    }
+
+    public class Response
+    {
+        public int timestamp { get; set; }
+        public string date { get; set; }
+        public string from { get; set; }
+        public string to { get; set; }
+        public int amount { get; set; }
+        public float value { get; set; }
+    }
+
 }
