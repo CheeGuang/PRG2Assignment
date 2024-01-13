@@ -236,7 +236,7 @@ namespace S10258143_PRG2Assignment
             while(true)
             {
                 IceCream iceCreamOrdered = OrderIceCream();
-                newOrder.IceCreamList.Add(iceCreamOrdered);
+                newOrder.AddIceCream(iceCreamOrdered);
 
                 string answer;
                 while (true)

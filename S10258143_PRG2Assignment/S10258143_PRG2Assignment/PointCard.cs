@@ -43,7 +43,10 @@ namespace S10258143_PRG2Assignment
         }
         public void RedeemPoints(int pts)
         {
-            points -= pts;
+            if (Points >= pts && Tier.ToLower() != "ordinary")
+            {
+                points -= pts;
+            }
         }
         public void Punch()
         {
@@ -51,7 +54,7 @@ namespace S10258143_PRG2Assignment
             PunchCard++;
             if (PunchCard == 11)
             {
-                PunchCard = 1;
+                PunchCard = 0;
             }
         }
         public override string ToString()

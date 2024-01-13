@@ -44,7 +44,8 @@ namespace S10258143_PRG2Assignment
         }
         public void ModifyIceCream(int index)
         {
-            
+            Console.Write("Modify option (y, n): ");
+            var value = Console.ReadLine();
         }
         public void AddIceCream(IceCream iceCream)
         {
