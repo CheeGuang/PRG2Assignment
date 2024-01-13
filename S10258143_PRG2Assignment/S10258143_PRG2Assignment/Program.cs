@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
@@ -17,8 +18,15 @@ namespace S10258143_PRG2Assignment
             Dictionary<string, Customer> customers = new Dictionary<string, Customer>();
             InitialiseCustomersData(customers);
 
+            // Initialising Orders ==================================================================================================================
+            List<Order> orders = new List<Order>();
+            InitialiseOrdersData(orders);
+
             // Q1 List all customers ================================================================================================================
             ListAllCustomers(customers);
+
+            // Q2 List all orders ===================================================================================================================
+            ListAllGoldRegOrders(orders);
 
             // Q3 Register a new customer ===========================================================================================================
             //RegisterCustomer();
@@ -46,12 +54,49 @@ namespace S10258143_PRG2Assignment
             }
         }
 
+        // Initialising Orders ======================================================================================================================
+        static void InitialiseOrdersData(List<Order> orders)
+        {
+            // Getting Data from customers.csv
+            using (StreamReader sr = new StreamReader("orders.csv")) //Fill in with data later
+            {
+                // Removing Header
+                string header = sr.ReadLine();
+                string line = sr.ReadLine();
+
+                // Iterating though each row
+                while (line != null)
+                {
+                    string[] lineDetail = line.Split(',');
+                    // Adding Order record to orders
+                    orders.Add(new Order(Convert.ToInt32(lineDetail[0]), Convert.ToDateTime(lineDetail[1])));
+                    
+                    line = sr.ReadLine();
+                }
+            }
+        }
+
         // Q1 List all customers ====================================================================================================================
         static void ListAllCustomers(Dictionary<string, Customer> customers)
         {
             foreach (Customer customer in customers.Values)
             {
                 Console.WriteLine(customer.ToString());
+            }
+            Console.WriteLine();
+            Console.WriteLine();
+        }
+
+        // Q2 List all orders =======================================================================================================================
+        /// <summary>
+        /// Missing: Need to check for Gold or Regular then print
+        /// </summary>
+        /// <param name="orders"></param>
+        static void ListAllGoldRegOrders(List<Order> orders)
+        {
+            foreach (Order order in orders)
+            {
+                Console.WriteLine(order.ToString());
             }
             Console.WriteLine();
             Console.WriteLine();
@@ -464,5 +509,187 @@ namespace S10258143_PRG2Assignment
             }
             return iceCream;
         }
+
+        // Q5 Display Selected customer's order =====================================================================================================
+        static void DisplayCustomerOrder(Dictionary<string, Customer> customers)
+        {
+            // List all customers
+            ListAllCustomers(customers);
+
+            //Initialise memberId
+            int memberId = 0;
+
+            //User Prompt
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Please select a customer by their ID: ");
+                    memberId = int.Parse(Console.ReadLine());
+
+                    // Check if memberId is in the list
+                    // NOTE: Check with Jeffrey if customers dict key can be int instead of string
+                    if(!customers.ContainsKey(Convert.ToString(memberId)))
+                    {
+                        // If memberId do not exist in customers dict
+                        throw new ArgumentException();
+
+                    }
+                    else
+                    {
+                        // End of checking if memberId exist and displaying order details
+                        // Break out of while loop
+                        break;
+                    }
+                    
+                }
+                catch
+                {
+                    Console.WriteLine("An invalid response has been entered. Please try again.");
+                };
+
+                // Get the selected customer object
+                Customer selectedCustomer = customers[Convert.ToString(memberId)];
+
+                // Retrieve all (current + past) order details of the selected customer
+                List<Order> selectedCustOrderHist = selectedCustomer.OrderHistory;
+                Order selectedCustCurrentOrder = selectedCustomer.CurrentOrder;
+
+                Console.WriteLine("Current Order \n ===============================");
+                if (selectedCustCurrentOrder.TimeFulfilled != null)
+                {
+                    Console.WriteLine(selectedCustCurrentOrder.ToString() + $"\t Time fulfilled: {selectedCustCurrentOrder.TimeFulfilled}");
+                }
+                else
+                {
+                    Console.WriteLine(selectedCustCurrentOrder.ToString());
+                }
+
+                // Print all Ice Cream associated with the current order
+                foreach (IceCream iceCream in selectedCustCurrentOrder.IceCreamList)
+                {
+                    Console.WriteLine(iceCream.ToString());
+                }
+
+                // Check if there are any past orders
+                if (selectedCustOrderHist.Count > 0)
+                {
+                    Console.WriteLine("\nPast Orders \n ===============================");
+                    foreach (Order order in selectedCustOrderHist)
+                    {
+                        if (order.TimeFulfilled != null)
+                        {
+                            Console.WriteLine(order.ToString() + $"\t Time Fulfilled: {order.TimeFulfilled}");
+                        }
+                        else
+                        {
+                            Console.WriteLine(order.ToString());
+                        }
+
+                        // Print all Ice Cream associated with the order
+                        foreach (IceCream iceCream in order.IceCreamList)
+                        {
+                            Console.WriteLine(iceCream.ToString());
+                        }
+                    }
+                    // End of printing all past orders
+                }
+                // End of checking for past orders
+            }
+        }
+
+        // Q6 Modify order details ==================================================================================================================
+        static void ModifyOrderDetails(Dictionary<string, Customer> customers)
+        {
+            // List all customers
+            ListAllCustomers(customers);
+
+            // Initialise memberId
+            int memberId = 0;
+
+            //User Prompt
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Please select a customer by their ID: ");
+                    memberId = int.Parse(Console.ReadLine());
+
+                    // Check if memberId is in the list
+                    // NOTE: Check with Jeffrey if customers dict key can be int instead of string
+                    if (!customers.ContainsKey(Convert.ToString(memberId)))
+                    {
+                        // If memberId do not exist in customers dict
+                        throw new ArgumentException();
+
+                    }
+                    else
+                    {
+                        // End of checking if memberId exist and displaying order details
+                        // Break out of while loop
+                        break;
+
+                    }  
+                }
+                catch
+                {
+                    Console.WriteLine("An invalid response has been entered. Please try again.");
+                };
+                // End of try catch 
+            }
+            // End of while loop
+
+            // Get the selected customer object
+            Customer selectedCustomer = customers[Convert.ToString(memberId)];
+
+            // Retrieve and display current order details of the selected customer
+            Order selectedCustCurrentOrder = selectedCustomer.CurrentOrder;
+            Console.WriteLine(selectedCustCurrentOrder.ToString());
+
+            // Print all Ice Cream associated with the current order
+            foreach (IceCream iceCream in selectedCustCurrentOrder.IceCreamList)
+            {
+                Console.WriteLine(iceCream.ToString());
+            }
+
+            // Display Menu
+            Console.Write("[1] Modify an existing ice cream");
+            Console.Write("[2] Add a new ice cream");
+            Console.Write("[3] Delete an existing ice cream");
+
+            // Initialise option variable
+            int option;
+
+            // Check if the option typed in is correct
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Enter your option: ");
+                    option = Convert.ToInt32(Console.ReadLine());
+
+                    if (option < 1 || option > 3)
+                    {
+                        throw new Exception();
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("An invalid option is entered. Please enter a valid option.");
+                }
+            }
+
+            // Option typed in below will be correct
+            switch (option)
+            {
+                case 1:
+                    break; 
+                case 2:
+                    break;
+                default:
+                    break;
+            }
+        }
+        // End of function
     }
 }
