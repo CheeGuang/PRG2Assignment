@@ -1,4 +1,10 @@
-﻿using System.Collections.Generic;
+﻿//==========================================================
+// Student Number : S10258143
+// Student Name : Lee Guang Le, Jeffrey
+// Partner Name : Zou Ruining Raeanne
+//==========================================================
+
+using System.Collections.Generic;
 
 namespace T02_Group01_PRG2Assignment
 {
@@ -18,9 +24,9 @@ namespace T02_Group01_PRG2Assignment
             get { return scoops; }
             set { scoops = value; }
         }
-        private List<Flavour> flavours;
+        private List<Flavour> flavours = new List<Flavour>();
 
-        public List<Flavour> Flavours
+        public List<Flavour> Flavours 
         {
             get { return flavours; }
             set 
@@ -30,8 +36,8 @@ namespace T02_Group01_PRG2Assignment
                     flavours = value;
                 }
             }
-        }
-        private List<Topping> toppings;
+        } 
+        private List<Topping> toppings = new List<Topping>();
 
         public List<Topping> Toppings
         {

@@ -1,4 +1,10 @@
-﻿namespace T02_Group01_PRG2Assignment
+﻿//==========================================================
+// Student Number : S10258143
+// Student Name : Lee Guang Le, Jeffrey
+// Partner Name : Zou Ruining Raeanne
+//==========================================================
+
+namespace T02_Group01_PRG2Assignment
 {
     class Flavour
     {

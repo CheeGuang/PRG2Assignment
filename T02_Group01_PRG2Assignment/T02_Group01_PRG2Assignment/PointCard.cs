@@ -1,4 +1,10 @@
-﻿using System;
+﻿//==========================================================
+// Student Number : S10258143
+// Student Name : Lee Guang Le, Jeffrey
+// Partner Name : Zou Ruining Raeanne
+//==========================================================
+
+using System;
 
 namespace T02_Group01_PRG2Assignment
 {
@@ -29,21 +35,50 @@ namespace T02_Group01_PRG2Assignment
         {
             Points = 0;
             PunchCard = 0;
-            Tier = "Ordinary";
+            Tier = "ordinary";
         }
         public PointCard(int points, int punchCard)
         {
             Points = points;
             PunchCard = punchCard;
+            // If Points more than 100, set tier as Gold
+            if (Points >= 100)
+            {
+                Tier = "gold";
+            }
+            // If Points more than 50, set tier as Silver
+            else if (Points >= 50)
+            {
+                Tier = "silver";
+            }
+            // Else, Points is less than 50. Set tier as Ordinary
+            else
+            {
+                Tier = "ordinary";
+            }
         }
-        public void AddPoints(int amount)
+        public void AddPoints(double amount)
         {
             // Explicit Downcasting from double to int needed
             points += (int)Math.Floor(amount * 0.72);
+
+            // (a) (ii) Process an order and checkout (Additional Feature) =================
+            if (Points >= 100)
+            {
+                Tier = "gold";
+            }
+            else if (Points >= 50)
+            {
+                Tier = "silver";
+            }
         }
         public void RedeemPoints(int pts)
         {
-            if (Points >= pts && Tier.ToLower() != "ordinary")
+            if (Points < pts)
+            {
+                throw new ArgumentException();
+            }
+            else if (Tier.ToLower() != "ordinary")
             {
                 points -= pts;
             }

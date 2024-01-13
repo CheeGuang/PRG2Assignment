@@ -1,4 +1,18 @@
-﻿using System;
+﻿//==========================================================
+// Student Number : S10258143
+// Student Name : Lee Guang Le, Jeffrey
+// Partner Name : Zou Ruining Raeanne
+//==========================================================
+
+// Jeffrey will do:
+// Q1, 3, 4 -> Basic Feature
+// (a) -> Advanced Feature
+
+// Raeanne will do:
+// Q2, 5, 6 -> Basic Feature
+// (b) -> Advanced Feature
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -14,27 +28,37 @@ namespace T02_Group01_PRG2Assignment
     {
         static void Main(string[] args)
         {
-            // Initialising Customers ===============================================================================================================
+            // =============================================== Basic Features ==================================================
+
+            // Initialising Customers ==================================================
             Dictionary<string, Customer> customers = new Dictionary<string, Customer>();
             InitialiseCustomersData(customers);
 
-            // Initialising Orders ==================================================================================================================
+            // Initialising Orders =====================================================
             List<Order> orders = new List<Order>();
-            //InitialiseOrdersData(orders);
+            //InitialiseOrdersData(orders);                 ------------ COMMENTED OUT TO ALLOW TESTING ---------------
 
-            // Q1 List all customers ================================================================================================================
+            // Q1 List all customers ===================================================
             ListAllCustomers(customers);
 
-            // Q2 List all orders ===================================================================================================================
-            ListAllGoldRegOrders(orders);
+            // Q2 List all orders ======================================================
+            Queue<Customer> goldQueue = new Queue<Customer>();
+            Queue<Customer> ordinaryQueue = new Queue<Customer>();
+            // ListAllGoldRegOrders(orders);                ------------COMMENTED OUT TO ALLOW TESTING ---------------
 
-            // Q3 Register a new customer ===========================================================================================================
+            // Q3 Register a new customer ==============================================
             //RegisterCustomer();
 
-            CreateOrder(customers);
+            // Q4 Create a customer's order ============================================
+            CreateOrder(customers, goldQueue, ordinaryQueue);
+
+
+            // ============================================== Advanced Features =================================================
+            // (a) Process an order and checkout ========================================
+            ProcessOrderAndCheckout(goldQueue, ordinaryQueue);
         }
 
-        // Initialising Customers ====================================================================================================================
+        // Initialising Customers =======================================================
         static void InitialiseCustomersData(Dictionary<string, Customer> customers)
         {
             // Getting Data from customers.csv
@@ -54,7 +78,7 @@ namespace T02_Group01_PRG2Assignment
             }
         }
 
-        // Initialising Orders ======================================================================================================================
+        // Initialising Orders =========================================================
         static void InitialiseOrdersData(List<Order> orders)
         {
             // Getting Data from customers.csv
@@ -76,7 +100,9 @@ namespace T02_Group01_PRG2Assignment
             }
         }
 
-        // Q1 List all customers ====================================================================================================================
+        // ================================================ Basic Features ======================================================
+
+        // Q1 List all customers =======================================================
         static void ListAllCustomers(Dictionary<string, Customer> customers)
         {
             foreach (Customer customer in customers.Values)
@@ -87,7 +113,7 @@ namespace T02_Group01_PRG2Assignment
             Console.WriteLine();
         }
 
-        // Q2 List all orders =======================================================================================================================
+        // Q2 List all orders ==========================================================
         /// <summary>
         /// Missing: Need to check for Gold or Regular then print
         /// </summary>
@@ -102,7 +128,7 @@ namespace T02_Group01_PRG2Assignment
             Console.WriteLine();
         }
 
-        // Q3 Register a new customer ===============================================================================================================
+        // Q3 Register a new customer ==================================================
         static Customer RegisterCustomer()
         {
             Console.Write("Enter new customer Name: ");
@@ -195,9 +221,10 @@ namespace T02_Group01_PRG2Assignment
             return customer;
         }
 
-        // Q4 Create a customer's order =============================================================================================================
-        static void CreateOrder(Dictionary<string, Customer> customers)
+        // Q4a Create a customer's order ===============================================
+        static void CreateOrder(Dictionary<string, Customer> customers, Queue<Customer> goldQueue, Queue<Customer> ordinaryQueue)
         {
+            
             ListAllCustomers(customers);
 
             // Initilising memberID, customer, option, scoops, flavours, toppings and iceCream so to allow new customer object to be instanciated.
@@ -230,287 +257,31 @@ namespace T02_Group01_PRG2Assignment
                 }
             }
 
-            // Creating Order
-            Order newOrder = new Order();
+            customer.MakeOrder();
 
-            while(true)
+            try
             {
-                IceCream iceCreamOrdered = OrderIceCream();
-                newOrder.AddIceCream(iceCreamOrdered);
-
-                string answer;
-                while (true)
+                if (customer.Rewards.Tier.ToLower() == "ordinary" || customer.Rewards.Tier.ToLower() == "silver")
                 {
-                    try
-                    {
-                        Console.Write("Would like to add another ice cream to the order? (Y, N): ");
-                        answer = Console.ReadLine();
-
-                        if (answer.ToLower() != "y" && answer.ToLower() != "n")
-                        {
-                            throw new ArgumentException();
-                        }
-                        break;
-                    }
-                    catch (ArgumentException)
-                    {
-
-                        Console.WriteLine("Enter either 'Y' or 'N'."); ;
-                    }
+                    ordinaryQueue.Enqueue(customer);
                 }
-                
-                if (answer.ToLower() == "n")
+                else if (customer.Rewards.Tier.ToLower() == "gold")
                 {
-                    break;
+                    goldQueue.Enqueue(customer);
                 }
+
             }
-            customer.CurrentOrder = newOrder;
+            catch (Exception)
+            {
+                Console.WriteLine("Order made was unsuccessfully");
+            }
+
+            Console.WriteLine("Order has been made successfully");
 
         }
 
-        static IceCream OrderIceCream()
-        {
-            string option;
-            int scoops;
-            List<Flavour> flavours = new List<Flavour>();
-            List<Topping> toppings = new List<Topping>();
-            IceCream iceCream;
 
-            while (true)
-            {
-                try
-                {
-                    Console.Write("Enter Ice-Cream Option (Cup, Cone or Waffle): ");
-                    option = Console.ReadLine();
-
-                    if (option.ToLower() != "cup" && option.ToLower() != "cone" && option.ToLower() != "waffle")
-                    {
-                        throw new ArgumentException();
-                    }
-
-                    Console.WriteLine();
-                    break;
-                }
-                catch (ArgumentException)
-                {
-                    Console.WriteLine("Choose between Cup, Cone or Waffle.");
-                    Console.WriteLine();
-                }
-            }
-            while (true)
-            {
-                try
-                {
-                    Console.Write("Enter Number of Scoops (1-3): ");
-                    scoops = Convert.ToInt32(Console.ReadLine());
-
-                    if (scoops < 1 || scoops > 3)
-                    {
-                        throw new ArgumentException();
-                    }
-
-                    Console.WriteLine();
-                    break;
-                }
-                catch (ArgumentException)
-                {
-                    Console.WriteLine("Number of Scoops must be between 1 and 3.");
-                    Console.WriteLine();
-                }
-            }
-
-            List<string> regularFlavours = new List<string>() { "vanilla", "chocolate", "strawberry" };
-            List<string> premiumFlavours = new List<string>() { "durian", "ube", "sea salt" };
-
-            // Displaying Regular Flavours
-            Console.WriteLine("Available Flavours:");
-            Console.Write("Regular Flavours -> ");
-            foreach (string flavour in regularFlavours)
-            {
-                Console.Write(flavour);
-            }
-            Console.WriteLine();
-
-            // Displaying Premium Flavours
-            Console.Write("Regular Flavours -> ");
-            foreach (string flavour in premiumFlavours)
-            {
-                Console.Write(flavour);
-            }
-            Console.WriteLine();
-
-            Dictionary<string, int> selectedFlavours = new Dictionary<string, int>();
-            // Ensure Selected Flavours are valid
-            for (int i = 0; i < scoops; i++)
-            {
-                while (true)
-                {
-                    try
-                    {
-                        Console.Write("Enter the Flavour you want: ");
-                        string selectedFlavour = Console.ReadLine();
-
-                        if (!regularFlavours.Contains(selectedFlavour.ToLower()) && !premiumFlavours.Contains(selectedFlavour.ToLower()))
-                        {
-                            throw new ArgumentException();
-                        }
-
-                        if (selectedFlavours.ContainsKey(selectedFlavour))
-                        {
-                            selectedFlavours[selectedFlavour]++;
-                        }
-                        else
-                        {
-                            selectedFlavours[selectedFlavour] = 1;
-                        }
-                        break;
-                    }
-                    catch (ArgumentException)
-                    {
-                        Console.WriteLine("Flavour unavailable.");
-                        Console.WriteLine();
-                    }
-
-                }
-            }
-
-            // Adding Flavours Selected to flavours
-            foreach (KeyValuePair<string, int> flavour in selectedFlavours)
-            {
-                bool isPremium = premiumFlavours.Contains(flavour.Key);
-                flavours.Add(new Flavour(flavour.Key, isPremium, flavour.Value));
-            }
-
-
-            Console.WriteLine();
-
-
-            // Ensure Toppings are valid
-            List<string> toppingsAvailable = new List<string>() { "sprinkes", "mochi", "sago", "oreos" };
-
-            // Displaying available Toppings
-            Console.WriteLine("Available Toppings:");
-            foreach (string topping in toppingsAvailable)
-            {
-                Console.WriteLine(topping);
-            }
-            Console.WriteLine();
-
-            for (int i = 0; i < 4; i++)
-            {
-                string selectedTopping;
-                while (true)
-                {
-                    try
-                    {
-                        Console.Write("Enter the Toppings you want (Enter 'X' to Exit): ");
-                        selectedTopping = Console.ReadLine();
-
-                        // If selectedTopping == 'x', Exit.
-                        if (selectedTopping.ToLower() == "x")
-                        {
-                            break;
-                        }
-
-                        if (!toppingsAvailable.Contains(selectedTopping))
-                        {
-                            throw new ArgumentException();
-                        }
-
-                        // Adding Selected Topping to toppings
-                        toppings.Add(new Topping(selectedTopping));
-                        break;
-                    }
-                    catch (ArgumentException)
-                    {
-                        Console.WriteLine("Topping unavailable.");
-                        Console.WriteLine();
-                    }
-
-                }
-                if (selectedTopping.ToLower() == "x")
-                {
-                    break;
-                }
-            }
-
-            if (option == "cup")
-            {
-                iceCream = new Cup(option, scoops, flavours, toppings);
-            }
-            else if (option == "cone")
-            {
-                string isDipped;
-                while (true)
-                {
-                    try
-                    {
-                        Console.Write("Do you want your cone Dipped in chocolate? (y, n): ");
-                        isDipped = Console.ReadLine();
-
-                        if (isDipped != "y" || isDipped != "n")
-                        {
-                            throw (new ArgumentException());
-                        }
-                        break;
-                    }
-                    catch (ArgumentException)
-                    {
-
-                        Console.WriteLine("Enter either 'y' or 'n'."); ;
-                    }
-                }
-
-
-                if (isDipped == "y")
-                {
-                    iceCream = new Cone(option, scoops, flavours, toppings, true);
-                }
-                else
-                {
-                    iceCream = new Cone(option, scoops, flavours, toppings, false);
-                }
-            }
-            else
-            {
-                string selectedWaffleFlavour;
-                List<string> waffleFlavourAvailable = new List<string>() { "red velvet", "charcoal", "pandan" };
-
-                // Displaying available waffle flavours
-                Console.WriteLine("Available Waffle Flavours:");
-                foreach (string waffleFlavour in waffleFlavourAvailable)
-                {
-                    Console.WriteLine(waffleFlavour);
-                }
-                Console.WriteLine();
-                while (true)
-                {
-                    try
-                    {
-                        Console.Write("Enter flavour of Waffle: ");
-                        selectedWaffleFlavour = Console.ReadLine();
-
-                        if (!waffleFlavourAvailable.Contains(selectedWaffleFlavour.ToLower()))
-                        {
-                            throw (new ArgumentException());
-                        }
-
-                        break;
-                    }
-                    catch (ArgumentException)
-                    {
-
-                        Console.WriteLine("Enter a valid Waffle Flavour."); ;
-                    }
-                }
-
-
-                iceCream = new Waffle(option, scoops, flavours, toppings, selectedWaffleFlavour);
-            }
-            return iceCream;
-        }
-
-        // Q5 Display Selected customer's order =====================================================================================================
+        // Q5 Display Selected customer's order ========================================
         static void DisplayCustomerOrder(Dictionary<string, Customer> customers)
         {
             // List all customers
@@ -598,7 +369,7 @@ namespace T02_Group01_PRG2Assignment
             }
         }
 
-        // Q6 Modify order details ==================================================================================================================
+        // Q6 Modify order details =====================================================
         static void ModifyOrderDetails(Dictionary<string, Customer> customers)
         {
             // List all customers
@@ -691,5 +462,156 @@ namespace T02_Group01_PRG2Assignment
             }
         }
         // End of function
+
+        // ============================================== Advanced Features ======================================================
+
+        // (a) (i) Process an order and checkout =======================================
+        static void ProcessOrderAndCheckout(Queue<Customer> goldQueue, Queue<Customer> ordinaryQueue)
+        {
+            Customer currentCustomer;
+
+            // If there is a customer in Gold Queue, Dequeue Customer from goldQueue.
+            if (goldQueue.Count != 0)
+            {
+                currentCustomer = goldQueue.Dequeue();
+            }
+
+            // Else Dwqueue Customer from ordinaryQueue
+            else
+            {
+                currentCustomer = ordinaryQueue.Dequeue();
+            }
+
+            // Storing currentOrder
+            Order currentOrder = currentCustomer.CurrentOrder;
+
+            // Storing currentPointCard
+            PointCard currentPointCard = currentCustomer.Rewards;
+
+            // display all the ice creams in the order
+            foreach (IceCream iceCream in currentOrder.IceCreamList)
+            {
+                Console.WriteLine(iceCream.ToString());
+            }
+            Console.WriteLine();
+
+            // display the total bill amount 
+            double totalBill = currentOrder.CalculateTotal();
+            Console.WriteLine("Total Bill: $" + totalBill.ToString("0.00"));
+
+            // display the membership status & points of the customer
+            Console.WriteLine("Membership Status: " + currentPointCard.Tier);
+            Console.WriteLine();
+
+            // For Validation of Q4 Part 6
+            bool isMostExpensiveIceCreamAtIndex0 = true;
+
+            // Check if it is the customer’s birthday, and if it is, calculate the final bill while having the most expensive ice cream in the order cost $0.00
+            if (currentCustomer.IsBirthday())
+            {
+                IceCream mostExpensiveIceCream;
+
+                // Temporarily storing most expensive ice cream as the first ice cream in IceCreamList
+                mostExpensiveIceCream = currentOrder.IceCreamList[0];
+
+                // Looking for most Expensive Ice Cream in IceCreamList. Start from 1 to skip the first ice cream added.
+                for (int i = 1; i < currentOrder.IceCreamList.Count; i++)
+                {
+                    if (currentOrder.IceCreamList[i].CalculatePrice() > mostExpensiveIceCream.CalculatePrice())
+                    {
+                        mostExpensiveIceCream = currentOrder.IceCreamList[i];
+                        isMostExpensiveIceCreamAtIndex0 = false;
+                    }
+                }
+
+                // Setting most expensive ice cream in the order's cost as $0.00
+                totalBill -= mostExpensiveIceCream.CalculatePrice();
+
+                // Checking if Most Expensive IceCream At Index 0
+            }
+
+            // Check if the customer has completed their punch card. If so, then calculate the final bill while having the first ice cream in their order cost $0.00 and reset their punch card back to 0
+            if (currentPointCard.PunchCard == 10)
+            {
+                // Checking if the first ice cream's total price was already set to $0
+                if (!isMostExpensiveIceCreamAtIndex0)
+                {
+                    totalBill -= currentOrder.IceCreamList[0].CalculatePrice();
+                }
+                // If first ice cream already set to $0, make 2nd ice cream price's $0
+                else
+                {
+                    totalBill -= currentOrder.IceCreamList[1].CalculatePrice();
+                }
+
+                // Resets punch card back to 0 will be done at the End
+            }
+
+            // Check Pointcard status to determine if the customer can redeem points. If they cannot, skip to displaying the final bill amount
+            if (currentPointCard.Tier.ToLower() != "ordinary")
+            {
+                while(true)
+                {
+                    int noOfPointsToRedeem;
+
+                    // Ensuring Input value is an Integer
+                    try
+                    {
+                        Console.Write("Enter number of points to redeem to offset final bill (Enter 0 to not Redeem any points): ");
+                        noOfPointsToRedeem = Convert.ToInt32(Console.ReadLine());
+
+                        if(noOfPointsToRedeem == 0)
+                        {
+                            break;
+                        }
+                    }
+                    catch (FormatException)
+                    {
+                        Console.WriteLine("Please Enter an Integer.");
+                        continue;
+                    }
+
+                    // Ensuring Point Card has sufficient Points to be redeemed
+                    try
+                    {
+                        currentPointCard.RedeemPoints(noOfPointsToRedeem);
+                        totalBill -= noOfPointsToRedeem * 0.02;
+                        break;
+                    }
+                    catch (ArgumentException)
+                    {
+
+                        Console.WriteLine("Insufficient Points in Point Card");
+                        continue;
+                    }
+                }
+                
+            }
+
+            // Display the final total bill amount
+            Console.WriteLine("Final Bill: $" + totalBill.ToString("0.00"));
+
+            // Prompt user to press any key to make payment
+            Console.Write("\nPress any key to make payment: ");
+            Console.ReadLine();
+
+            // Increment the punch card for every ice cream in the order (if it goes above 10 just set it back down to 10)
+            for (int i = 0; i < currentOrder.IceCreamList.Count; i++)
+            {
+                currentPointCard.Punch();
+            }
+
+            // Earn points
+            currentPointCard.AddPoints(totalBill);
+
+            // While earning points, upgrade the member status accordingly
+            // Done in PointCard AddPoints() method
+
+            // Mark the order as fulfilled with the current datetime
+            currentOrder.TimeFulfilled = DateTime.Now;
+
+            // Add this fulfilled order object to the customer’s order history
+            currentCustomer.OrderHistory.Add(currentOrder);
+        }
     }
 }
