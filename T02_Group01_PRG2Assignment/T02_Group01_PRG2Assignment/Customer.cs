@@ -236,7 +236,7 @@ namespace T02_Group01_PRG2Assignment
 
                 if (option.ToLower() == "cup")
                 {
-                    iceCreamOrdered = new Cup(option, scoops, flavours, toppings);
+                    iceCreamOrdered = new Cup(scoops, flavours, toppings);
                 }
                 else if (option.ToLower() == "cone")
                 {
@@ -264,11 +264,11 @@ namespace T02_Group01_PRG2Assignment
 
                     if (isDipped == "y")
                     {
-                        iceCreamOrdered = new Cone(option, scoops, flavours, toppings, true);
+                        iceCreamOrdered = new Cone(scoops, flavours, toppings, true);
                     }
                     else
                     {
-                        iceCreamOrdered = new Cone(option, scoops, flavours, toppings, false);
+                        iceCreamOrdered = new Cone(scoops, flavours, toppings, false);
                     }
                 }
                 else
@@ -305,7 +305,7 @@ namespace T02_Group01_PRG2Assignment
                     }
 
 
-                    iceCreamOrdered = new Waffle(option, scoops, flavours, toppings, selectedWaffleFlavour);
+                    iceCreamOrdered = new Waffle(scoops, flavours, toppings, selectedWaffleFlavour);
                 }
 
                 newOrder.AddIceCream(iceCreamOrdered);

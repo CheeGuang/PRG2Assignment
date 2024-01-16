@@ -24,7 +24,7 @@ namespace T02_Group01_PRG2Assignment
         {
 
         }
-        public Waffle(string option, int scoops, List<Flavour> flavours, List<Topping> toppings, string waffleFlavour) : base(option, scoops, flavours, toppings)
+        public Waffle(int scoops, List<Flavour> flavours, List<Topping> toppings, string waffleFlavour) : base("Waffle", scoops, flavours, toppings)
         {
             WaffleFlavour = waffleFlavour;
         }

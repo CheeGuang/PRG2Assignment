@@ -23,6 +23,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Net.Http;
+using System.Web.UI.WebControls;
 
 namespace T02_Group01_PRG2Assignment
 {
@@ -36,9 +37,13 @@ namespace T02_Group01_PRG2Assignment
             Dictionary<string, Customer> customers = new Dictionary<string, Customer>();
             InitialiseCustomersData(customers);
 
+            // Initialising Flavours ===================================================
+            Dictionary<string,int> flavourDict = new Dictionary<string,int>();
+            InitialiseFlavour(flavourDict);
+
             // Initialising Orders =====================================================
-            List<Order> orders = new List<Order>();
-            //InitialiseOrdersData(orders);      ------------ COMMENTED OUT TO ALLOW TESTING (Feel free to uncomment) ------------ 
+            List<Order> orderList = new List<Order>();
+            InitialiseOrdersData(orderList, customers, flavourDict); //------------ COMMENTED OUT TO ALLOW TESTING (Feel free to uncomment) ------------ 
 
             // Q1 List all customers ===================================================
             ListAllCustomers(customers);
@@ -49,7 +54,7 @@ namespace T02_Group01_PRG2Assignment
             // ListAllGoldRegOrders(orders);     ------------ COMMENTED OUT TO ALLOW TESTING (Feel free to uncomment) ------------ 
 
             // Q3 Register a new customer ==============================================
-            //RegisterCustomer();
+            RegisterCustomer();
 
             // Q4 Create a customer's order ============================================
             CreateOrder(customers, goldQueue, ordinaryQueue);
@@ -57,7 +62,7 @@ namespace T02_Group01_PRG2Assignment
 
             // ============================================== Advanced Features =================================================
             // (a) Process an order and checkout ========================================
-            ProcessOrderAndCheckout(goldQueue, ordinaryQueue);
+            //ProcessOrderAndCheckout(goldQueue, ordinaryQueue);
 
             // (c) Convert from SGD to specified Currency ===============================
             //ConvertCurrency();                 ------------ COMMENTED OUT TO ALLOW TESTING (Do not leave it uncommented) -------
@@ -84,8 +89,25 @@ namespace T02_Group01_PRG2Assignment
         }
 
         // Initialising Orders =========================================================
-        static void InitialiseOrdersData(List<Order> orders)
+        static void InitialiseOrdersData(List<Order> orderList, Dictionary<string, Customer> customers, Dictionary<string, int> flavourDict)
         {
+            // Excel orders.csv data structure
+            const int orderId = 0;
+            const int memberId = 1;
+            const int timeRec = 2;
+            const int timeFul = 3;
+            const int option = 4;
+            const int scoops = 5;
+            const int dipped = 6;
+            const int waffleFlavour = 7;
+            const int flavour1 = 8;
+            const int flavour2 = 9;
+            const int flavour3 = 10;
+            const int topping1 = 11;
+            const int topping2 = 12;
+            const int topping3 = 13;
+            const int topping4 = 14;
+
             // Getting Data from customers.csv
             using (StreamReader sr = new StreamReader("orders.csv")) //Fill in with data later
             {
@@ -97,8 +119,117 @@ namespace T02_Group01_PRG2Assignment
                 while (line != null)
                 {
                     string[] lineDetail = line.Split(',');
-                    // Adding Order record to orders
-                    orders.Add(new Order(Convert.ToInt32(lineDetail[0]), Convert.ToDateTime(lineDetail[1])));
+
+                    // Create Order ------------------------------------------------------------------------------------------------------------------------
+                    Order newOrder = new Order();
+                    newOrder.Id = Convert.ToInt32(lineDetail[orderId]);
+                    newOrder.TimeReceived = Convert.ToDateTime(lineDetail[timeRec]);
+
+                    // Determine if time fulfilled has a value ---------------------------------------------------------------------------------------------
+                    if (lineDetail[timeFul] != null)
+                    {
+                        newOrder.TimeFulfilled = Convert.ToDateTime(lineDetail[timeFul]);
+                    }
+
+                    // Determine flavour -------------------------------------------------------------------------------------------------------------------
+                    List<Flavour> flavours = new List<Flavour>();
+                    string[] selectedFlavours = new string[] { lineDetail[flavour1], lineDetail[flavour2], lineDetail[flavour3] };
+
+                    foreach (string flavour in selectedFlavours)
+                    {
+                        // Check if there is anymore ice cream flavours in order to add
+                        if (flavour == "")
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            // Check for repeated flavours in an order
+                            Flavour foundFlavour = flavours.FirstOrDefault(x => x.Type == flavour);
+                            if (foundFlavour != null)
+                            {
+                                // Add quantity if repeated flavour
+                                foundFlavour.Quantity += 1;
+                            }
+                            else
+                            {
+                                // Check if flavour is premium 
+                                if (flavourDict[flavour.ToLower()] == 2)
+                                {
+                                    flavours.Add(new Flavour(flavour, true, 1));
+                                }
+                                else
+                                {
+                                    flavours.Add(new Flavour(flavour, false, 1));
+                                };
+                                // End of checking if flavour is premium 
+                            };
+                            // End of checking for repeated flavours in an order
+                        };
+                        // End of checking if there is anymore ice cream flavours in order to add
+                    }
+
+                    // Determine Number of Toppings --------------------------------------------------------------------------------------------------------
+                    int numToppings = 0;
+                    List<Topping> toppings = new List<Topping>();
+                    string[] selectedToppings = new string[] { lineDetail[topping1], lineDetail[topping2], lineDetail[topping3], lineDetail[topping4] };
+
+                    foreach (string topping in selectedToppings)
+                    {
+                        if (topping == "")
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            numToppings++;
+                        }
+                    }
+
+                    // Determine Waffle, Cup or Cone and create the IceCream Object, then add to Order object ----------------------------------------------
+                    if (lineDetail[option] == "Waffle")
+                    {
+                        Waffle orderItem = new Waffle(Convert.ToInt32(lineDetail[scoops]), flavours, toppings, lineDetail[waffleFlavour]);
+                        newOrder.AddIceCream(orderItem);
+                    } 
+                    else if (lineDetail[option] == "Cone")
+                    {
+                        Cone orderItem = new Cone(Convert.ToInt32(lineDetail[scoops]), flavours, toppings, Convert.ToBoolean(lineDetail[dipped].ToLower()));
+                        newOrder.AddIceCream(orderItem);
+                    }
+                    else
+                    {
+                        Cup orderItem = new Cup(Convert.ToInt32(lineDetail[scoops]), flavours, toppings);
+                        newOrder.AddIceCream(orderItem);
+                    }
+
+                    // Add to the Order List
+                    orderList.Add(newOrder);
+
+                    // Append to customer's order history
+                    string memID = lineDetail[memberId];
+                    customers[memID].OrderHistory.Add(newOrder);
+
+                    line = sr.ReadLine();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Reading the Flavour csv and instantiating flavour (Dict contains flavourName : Cost)
+        /// </summary>
+        static void InitialiseFlavour(Dictionary<string, int> flavourDict)
+        {
+            using (StreamReader sr = new StreamReader("flavours.csv"))
+            {
+                string header = sr.ReadLine();
+                string line = sr.ReadLine();
+
+                while (line != null)
+                {
+                    string[] lineDetail = line.Split(',');
+
+                    flavourDict[lineDetail[0].ToLower()] = Convert.ToInt32(lineDetail[1]);
 
                     line = sr.ReadLine();
                 }
@@ -232,7 +363,7 @@ namespace T02_Group01_PRG2Assignment
 
             ListAllCustomers(customers);
 
-            // Initilising memberID, customer, option, scoops, flavours, toppings and iceCream so to allow new customer object to be instanciated.
+            // Initilising memberID, customer, option, scoops, flavours, toppings and iceCream so to allow new customer object to be instantiated.
             int memberID;
             Customer customer;
 

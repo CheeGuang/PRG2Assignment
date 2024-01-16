@@ -15,7 +15,7 @@ namespace T02_Group01_PRG2Assignment
         {
             
         }
-        public Cup(string option, int scoops, List<Flavour> flavours, List<Topping> toppings) : base (option, scoops, flavours, toppings)
+        public Cup(int scoops, List<Flavour> flavours, List<Topping> toppings) : base ("Cup", scoops, flavours, toppings)
         {
             
         }

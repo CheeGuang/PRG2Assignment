@@ -41,7 +41,7 @@ namespace T02_Group01_PRG2Assignment
         }
         public override string ToString()
         {
-            return "Type: " + Type + "Premium: " + Premium + "Quantity: " + Quantity;
+            return "Type: " + Type + "\tPremium: " + Premium + "\tQuantity: " + Quantity;
         }
     }
 }

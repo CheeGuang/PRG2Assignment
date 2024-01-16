@@ -65,7 +65,7 @@ namespace T02_Group01_PRG2Assignment
 
         public override string ToString()
         {
-            return "\tOption: " + option + "\tScoops: " + scoops + "\tFlavours: " + flavours + "\tToppings: " + toppings;
+            return "\tOption: " + option + "\tScoops: " + scoops + "\tFlavours: " + string.Join(", ", flavours) + "\tToppings: " + string.Join(", ", toppings);
         }
     }
 }
