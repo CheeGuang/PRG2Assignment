@@ -1,7 +1,7 @@
 ﻿//==========================================================
 // Student Number : S10258143
 // Student Name : Lee Guang Le, Jeffrey
-// Partner Name : Zou Ruining Raeanne
+// Partner Name : Zou Ruining, Raeanne
 //==========================================================
 
 using System.Collections.Generic;

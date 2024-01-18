@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Web.UI.WebControls;
+using System.Runtime.InteropServices;
 
 namespace T02_Group01_PRG2Assignment
 {
@@ -38,12 +39,36 @@ namespace T02_Group01_PRG2Assignment
             InitialiseCustomersData(customers);
 
             // Initialising Flavours ===================================================
-            Dictionary<string,int> flavourDict = new Dictionary<string,int>();
-            InitialiseFlavour(flavourDict);
+            Dictionary<string,float> flavourMenuDict = new Dictionary<string, float>();
+            InitialiseFlavourMenu(flavourMenuDict);
+
+            // Initialising Topping ====================================================
+            Dictionary<string, float> toppingMenuDict = new Dictionary<string, float>();
+            InitialiseToppingMenu(toppingMenuDict);
+
+            // Initialising Options ====================================================
+            const int optScoopIdx = 0;
+            const int optPrice = 1;
+
+            List<float[]> cupPriceMenu = new List<float[]>();
+            List<float[]> conePriceMenu = new List<float[]>();
+            const int coneMenuDippedIdx = 2;
+
+            List<string[]> wafflePriceMenu = new List<string[]>();
+            const int waffleMenuFlavorIdx = 2;
+
+            InitialiseOptionMenu(cupPriceMenu, conePriceMenu, wafflePriceMenu);
+
+            Console.WriteLine("waffle Price: ");
+            foreach (string[] wafflePrice in wafflePriceMenu)
+            {
+                Console.WriteLine(wafflePrice[0] + " " + wafflePrice[1] + " " + wafflePrice[2]);
+            }
 
             // Initialising Orders =====================================================
             List<Order> orderList = new List<Order>();
-            InitialiseOrdersData(orderList, customers, flavourDict); //------------ COMMENTED OUT TO ALLOW TESTING (Feel free to uncomment) ------------ 
+            InitialiseOrdersData(orderList, customers, flavourMenuDict); //------------ COMMENTED OUT TO ALLOW TESTING (Feel free to uncomment) ------------ 
+
 
             // Q1 List all customers ===================================================
             ListAllCustomers(customers);
@@ -89,7 +114,7 @@ namespace T02_Group01_PRG2Assignment
         }
 
         // Initialising Orders =========================================================
-        static void InitialiseOrdersData(List<Order> orderList, Dictionary<string, Customer> customers, Dictionary<string, int> flavourDict)
+        static void InitialiseOrdersData(List<Order> orderList, Dictionary<string, Customer> customers, Dictionary<string, float> flavourMenuDict)
         {
             // Excel orders.csv data structure
             const int orderId = 0;
@@ -154,7 +179,7 @@ namespace T02_Group01_PRG2Assignment
                             else
                             {
                                 // Check if flavour is premium 
-                                if (flavourDict[flavour.ToLower()] == 2)
+                                if (flavourMenuDict[flavour.ToLower()] == 2)
                                 {
                                     flavours.Add(new Flavour(flavour, true, 1));
                                 }
@@ -171,17 +196,18 @@ namespace T02_Group01_PRG2Assignment
 
                     // Determine Number of Toppings --------------------------------------------------------------------------------------------------------
                     int numToppings = 0;
-                    List<Topping> toppings = new List<Topping>();
+                    List<Topping> toppingList = new List<Topping>();
                     string[] selectedToppings = new string[] { lineDetail[topping1], lineDetail[topping2], lineDetail[topping3], lineDetail[topping4] };
 
-                    foreach (string topping in selectedToppings)
+                    foreach (string tmpTopping in selectedToppings)
                     {
-                        if (topping == "")
+                        if (tmpTopping == "")
                         {
                             break;
                         }
                         else
                         {
+                            toppingList.Add(new Topping(tmpTopping));
                             numToppings++;
                         }
                     }
@@ -189,17 +215,17 @@ namespace T02_Group01_PRG2Assignment
                     // Determine Waffle, Cup or Cone and create the IceCream Object, then add to Order object ----------------------------------------------
                     if (lineDetail[option] == "Waffle")
                     {
-                        Waffle orderItem = new Waffle(Convert.ToInt32(lineDetail[scoops]), flavours, toppings, lineDetail[waffleFlavour]);
+                        Waffle orderItem = new Waffle(Convert.ToInt32(lineDetail[scoops]), flavours, toppingList, lineDetail[waffleFlavour]);
                         newOrder.AddIceCream(orderItem);
                     } 
                     else if (lineDetail[option] == "Cone")
                     {
-                        Cone orderItem = new Cone(Convert.ToInt32(lineDetail[scoops]), flavours, toppings, Convert.ToBoolean(lineDetail[dipped].ToLower()));
+                        Cone orderItem = new Cone(Convert.ToInt32(lineDetail[scoops]), flavours, toppingList, Convert.ToBoolean(lineDetail[dipped].ToLower()));
                         newOrder.AddIceCream(orderItem);
                     }
                     else
                     {
-                        Cup orderItem = new Cup(Convert.ToInt32(lineDetail[scoops]), flavours, toppings);
+                        Cup orderItem = new Cup(Convert.ToInt32(lineDetail[scoops]), flavours, toppingList);
                         newOrder.AddIceCream(orderItem);
                     }
 
@@ -218,7 +244,7 @@ namespace T02_Group01_PRG2Assignment
         /// <summary>
         /// Reading the Flavour csv and instantiating flavour (Dict contains flavourName : Cost)
         /// </summary>
-        static void InitialiseFlavour(Dictionary<string, int> flavourDict)
+        static void InitialiseFlavourMenu(Dictionary<string, float> flavourMenuDict)
         {
             using (StreamReader sr = new StreamReader("flavours.csv"))
             {
@@ -228,8 +254,71 @@ namespace T02_Group01_PRG2Assignment
                 while (line != null)
                 {
                     string[] lineDetail = line.Split(',');
+                    flavourMenuDict[lineDetail[0].ToLower()] = float.Parse(lineDetail[1]);
 
-                    flavourDict[lineDetail[0].ToLower()] = Convert.ToInt32(lineDetail[1]);
+                    line = sr.ReadLine();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Reading the Topping csv and instantiating flavour (Dict contains flavourName : Cost)
+        /// </summary>
+        static void InitialiseToppingMenu(Dictionary<string, float> toppingMenuDict)
+        {
+            using (StreamReader sr = new StreamReader("toppings.csv"))
+            {
+                string header = sr.ReadLine();
+                string line = sr.ReadLine();
+
+                while (line != null)
+                {
+                    string[] lineDetail = line.Split(',');
+                    toppingMenuDict[lineDetail[0].ToLower()] = float.Parse(lineDetail[1]);
+
+                    line = sr.ReadLine();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Reading the Options csv and instantiating flavour (Dict contains flavourName : Cost)
+        /// </summary>
+        static void InitialiseOptionMenu(List<float[]>cupPriceMenu, List<float[]> conePriceMenu, List<String[]> wafflePriceMenu)
+        {
+            int optionIdx = 0;
+            int scoopsIdx = 1;
+            int dippedIdx = 2;
+            int waffleFlavourIdx = 3;
+            int costIdx = 4;
+
+            using (StreamReader sr = new StreamReader("options.csv"))
+            {
+                string header = sr.ReadLine();
+                string line = sr.ReadLine();
+
+                while (line != null)
+                {
+                    string[] lineDetail = line.Split(',');
+
+                    if (lineDetail[optionIdx].ToLower() == "cup")
+                    {
+                        float[] cScoopsPriceArray = new float[] { Convert.ToInt32(lineDetail[scoopsIdx]), float.Parse(lineDetail[costIdx]) };
+                        cupPriceMenu.Add(cScoopsPriceArray);
+                    } else if (lineDetail[optionIdx].ToLower() == "cone")
+                    {
+                        bool isDipped = Convert.ToBoolean(lineDetail[dippedIdx]);
+
+                        // OR save all info as string
+
+                        float[] coScoopsPriceArray = new float[] { Convert.ToInt32(lineDetail[scoopsIdx]), float.Parse(lineDetail[costIdx]), Convert.ToInt32(isDipped) };
+                        conePriceMenu.Add(coScoopsPriceArray);
+                    }else if (lineDetail[optionIdx].ToLower() == "waffle")
+                    {
+                        //flavours can only be stored as string
+                        String[] wScoopsPriceArray = new String[] { lineDetail[scoopsIdx], lineDetail[costIdx], lineDetail[waffleFlavourIdx] };
+                        wafflePriceMenu.Add(wScoopsPriceArray);
+                    }
 
                     line = sr.ReadLine();
                 }
@@ -363,7 +452,7 @@ namespace T02_Group01_PRG2Assignment
 
             ListAllCustomers(customers);
 
-            // Initilising memberID, customer, option, scoops, flavours, toppings and iceCream so to allow new customer object to be instantiated.
+            // Initilising memberID, customer, option, scoops, flavours, toppingList and iceCream so to allow new customer object to be instantiated.
             int memberID;
             Customer customer;
 

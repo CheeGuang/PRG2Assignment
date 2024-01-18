@@ -11,16 +11,11 @@ namespace T02_Group01_PRG2Assignment
     class Topping
     {
         private string type;
-        private static Dictionary<string, int> toppingPriceDict;
+
         public string Type
         {
             get { return type; }
             set { type = value; }
-        }
-
-        public static void SetPrice(Dictionary<string, int> toppingDict)
-        {
-            toppingPriceDict = toppingDict;
         }
 
         public Topping()
@@ -30,11 +25,6 @@ namespace T02_Group01_PRG2Assignment
         public Topping(string type)
         {
             Type = type;
-        }
-
-        public float GetPrice()
-        {
-            return toppingPriceDict[Type];
         }
 
         public override string ToString()
