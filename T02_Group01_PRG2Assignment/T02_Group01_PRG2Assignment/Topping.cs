@@ -29,7 +29,7 @@ namespace T02_Group01_PRG2Assignment
 
         public override string ToString()
         {
-            return "Type: " + Type;
+            return Type;
         }
     }
 }

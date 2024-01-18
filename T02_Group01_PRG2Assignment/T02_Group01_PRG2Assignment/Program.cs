@@ -48,7 +48,7 @@ namespace T02_Group01_PRG2Assignment
 
             // Initialising Options ====================================================
             const int optScoopIdx = 0;
-            const int optPrice = 1;
+            const int optPriceIdx = 1;
 
             List<float[]> cupPriceMenu = new List<float[]>();
             List<float[]> conePriceMenu = new List<float[]>();
@@ -74,15 +74,19 @@ namespace T02_Group01_PRG2Assignment
             ListAllCustomers(customers);
 
             // Q2 List all orders ======================================================
-            Queue<Customer> goldQueue = new Queue<Customer>();
-            Queue<Customer> ordinaryQueue = new Queue<Customer>();
-            // ListAllGoldRegOrders(orders);     ------------ COMMENTED OUT TO ALLOW TESTING (Feel free to uncomment) ------------ 
+            //Queue<Customer> goldQueue = new Queue<Customer>();
+            //Queue<Customer> ordinaryQueue = new Queue<Customer>();
+
+            Queue<Order> goldQueue = new Queue<Order>();
+            Queue<Order> ordinaryQueue = new Queue<Order>();
+
+             ListAllGoldRegOrders(goldQueue, ordinaryQueue);    // ------------ COMMENTED OUT TO ALLOW TESTING (Feel free to uncomment) ------------ 
 
             // Q3 Register a new customer ==============================================
             RegisterCustomer();
 
             // Q4 Create a customer's order ============================================
-            CreateOrder(customers, goldQueue, ordinaryQueue);
+            // CreateOrder(customers, goldQueue, ordinaryQueue); ------------ COMMENTED OUT UNTIL QUEUE OBJECT TYPE IS FINALISED (dO NOT  to uncomment) ------------ 
 
 
             // ============================================== Advanced Features =================================================
@@ -343,14 +347,58 @@ namespace T02_Group01_PRG2Assignment
         /// Missing: Need to check for Gold or Regular then print
         /// </summary>
         /// <param name="orders"></param>
-        static void ListAllGoldRegOrders(List<Order> orders)
+        static void ListAllGoldRegOrders(Queue<Order> goldQueue, Queue<Order> ordinaryQueue)
         {
-            foreach (Order order in orders)
+            Console.WriteLine("************* Gold Members Queue *************");
+
+            // Test Data ----- TO BE REMOVED -----
+            Order order = new Order();
+            order.AddIceCream(new Waffle(2, new List<Flavour> { new Flavour("Vanilla", false, 2) }, new List<Topping> { new Topping("Mochi") }, "Red Velvet"));
+            goldQueue.Enqueue(order);
+
+            Order order2 = new Order();
+            order2.AddIceCream(new Waffle(3, new List<Flavour> { new Flavour("Vanilla", false, 1), new Flavour("Durian", true, 2) }, new List<Topping> { new Topping("Mochi"), new Topping("Sago") }, "Red Velvet"));
+            goldQueue.Enqueue(order2);
+
+            Order order3 = new Order();
+            order3.AddIceCream(new Cup(1, new List<Flavour> { new Flavour("Chocolate", false, 1) }, new List<Topping> { new Topping("Sprinkles"), new Topping("Sago") }));
+            goldQueue.Enqueue(order3);
+
+            Order order4 = new Order();
+            order4.AddIceCream(new Cone(2, new List<Flavour> { new Flavour("Vanilla", false, 1), new Flavour("Ube", true, 1) }, new List<Topping> { new Topping("Mochi"), new Topping("Sago") }, true));
+            goldQueue.Enqueue(order4);
+
+            foreach (Order tmpOrder in goldQueue)
             {
-                Console.WriteLine(order.ToString());
+                Console.WriteLine($"Order Time: {tmpOrder.TimeReceived}");
+                
+                foreach(IceCream iceCream in tmpOrder.IceCreamList)
+                {
+                    Console.WriteLine(iceCream.ToString());
+                    foreach(Flavour tmpFlavour in iceCream.Flavours)
+                    {
+                        Console.WriteLine(tmpFlavour.ToString());
+                    }
+                    foreach (Topping tmpTopping in iceCream.Toppings)
+                    {
+                        Console.WriteLine(tmpTopping.ToString());
+                    }
+
+                    Console.WriteLine();
+                    Console.WriteLine();
+                }
             }
             Console.WriteLine();
             Console.WriteLine();
+
+            Console.WriteLine("************* Regular Members Queue *************");
+            //foreach (Customer tmpCust in ordinaryQueue)
+            //{
+            //    Console.WriteLine(tmpCust.CurrentOrder);
+            //}
+            //Console.WriteLine();
+            //Console.WriteLine();
+
         }
 
         // Q3 Register a new customer ==================================================
@@ -476,7 +524,6 @@ namespace T02_Group01_PRG2Assignment
                 }
                 catch (KeyNotFoundException)
                 {
-
                     Console.WriteLine("Please enter a Member ID that exists.");
                     Console.WriteLine();
                 }
