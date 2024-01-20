@@ -1247,7 +1247,9 @@ namespace T02_Group01_PRG2Assignment
             }
 
             // Earn points
-            currentPointCard.AddPoints(totalBill);
+            // Explicit Downcasting from double to int needed
+            int pointsEarned = (int)Math.Floor(0.72 * totalBill);
+            currentPointCard.AddPoints(pointsEarned);
 
             // While earning points, upgrade the member status accordingly
             // Done in PointCard AddPoints() method
