@@ -80,7 +80,7 @@ namespace T02_Group01_PRG2Assignment
 
             // Initialising Orders =====================================================
             List<Order> orderList = new List<Order>();
-            InitialiseOrdersData(orderList, customers, Global.flavourMenuDict); //------------ COMMENTED OUT TO ALLOW TESTING (Feel free to uncomment) ------------ 
+            InitialiseOrdersData(orderList, customers, Global.flavourMenuDict);//--------- COMMENTED OUT TO ALLOW TESTING (Feel free to uncomment) ------------ 
 
 
             // Q1 List all customers ===================================================
@@ -92,20 +92,23 @@ namespace T02_Group01_PRG2Assignment
             // ListAllGoldRegOrders(goldQueue, ordinaryQueue);    // ------------ COMMENTED OUT TO ALLOW TESTING (Feel free to uncomment) ------------ 
 
             // Q3 Register a new customer ==============================================
-            //RegisterCustomer();
+            //RegisterCustomer(); // ------------ COMMENTED OUT TO ALLOW TESTING (Feel free to uncomment) ------------ 
 
             // Q4 Create a customer's order ============================================
-            //CreateOrder(customers, goldQueue, ordinaryQueue);
+            //CreateOrder(customers, goldQueue, ordinaryQueue); // ------------ COMMENTED OUT TO ALLOW TESTING (Feel free to uncomment) ------------ 
 
             // Q5 Display Order Detail of Customer =====================================
-            //DisplayCustomerOrder(customers);
+            //DisplayCustomerOrder(customers); // ------------ COMMENTED OUT TO ALLOW TESTING (Feel free to uncomment) ------------ 
 
             // Q6 Modify Order Detail ==================================================
-            ModifyOrderDetails(customers);
+            //ModifyOrderDetails(customers); // ------------ COMMENTED OUT TO ALLOW TESTING (Feel free to uncomment) ------------ 
 
             // ============================================== Advanced Features =================================================
-            // (a) Process an order and checkout ========================================
+            // (a) Process an order and checkout ================================================================================
             //ProcessOrderAndCheckout(goldQueue, ordinaryQueue);
+
+            // (b) Display monthly charged amount breakdown & total charged amounts for the year ================================
+            DisplayCharges(customers);
 
             // (c) Convert from SGD to specified Currency ===============================
             //ConvertCurrency();                 ------------ COMMENTED OUT TO ALLOW TESTING (Do not leave it uncommented) -------
@@ -1255,6 +1258,71 @@ namespace T02_Group01_PRG2Assignment
             // Add this fulfilled order object to the customer’s order history
             currentCustomer.OrderHistory.Add(currentOrder);
         }
+        // (b) Display monthly charged amt breakdown  =================================
+        static public void DisplayCharges(Dictionary<string, Customer> customers)
+        {
+            // Validate Year ----------------------------------------------------------
+            int yearIp = 0;
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Please enter the year (it should be a 4 digit number): ");
+                    yearIp = Convert.ToInt32(Console.ReadLine());
+
+                    if (yearIp.ToString().Length != 4)
+                    {
+                        throw new ArgumentException();
+                    }
+                    break;
+                }
+                catch (FormatException) { Console.WriteLine("It should be a 4 digit whole number. Please retry"); }
+                catch (ArgumentException) { Console.WriteLine("Ensure it is a valid 4 digit number. Please retry."); }
+                catch { Console.WriteLine("This is an invalid input. Please try again."); } 
+            }
+
+            // Consolidate all the orders ---------------------------------------------
+            List<Order> consolidatedOrders = new List<Order>();
+
+            foreach (Customer tmpCustomer in customers.Values)
+            {
+                foreach (Order tmpOrder in tmpCustomer.OrderHistory)
+                {
+                    // If order is successfully fulfilled + order is within the year
+                    if (tmpOrder.TimeReceived.Year == yearIp && tmpOrder.TimeFulfilled.HasValue)
+                    {
+                       //Add to consolidated orders
+                       consolidatedOrders.Add(tmpOrder);
+                    }
+                    
+                }
+            }
+
+            // Compute the amounts 
+            // List is in sequence, Jan = idx 0, Feb = idx 1 ... Nov = idx 10, Dec = idx 11
+            List<string> calenderMonths = new List<string>() { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+            List<double> computedAmt = new List<double>() { 0,0,0,0,0,0,0,0,0,0,0,0 };
+            double totalAmt = 0;
+
+            foreach(Order tmpOrder in consolidatedOrders)
+            {
+                double subtotal = tmpOrder.CalculateTotal();
+                int orderMonth = tmpOrder.TimeReceived.Month; // Month rep in numbers (i.e. Jan = 1)
+
+                // Add to the computed amount
+                computedAmt[orderMonth - 1] += subtotal; 
+                totalAmt += subtotal;
+            }
+
+            Console.WriteLine();
+            // Print the values
+            for (int i = 0; i < 12; i++)
+            {
+                Console.WriteLine($"{calenderMonths[i]} {yearIp}: \t${computedAmt[i].ToString("0.00")}");
+            }
+            Console.WriteLine("\nTotal: \t\t${0:0.00}", totalAmt);
+        }
+
 
         // (c) (Jeffrey) Convert from SGD to specified Currency ========================
         static public void ConvertCurrency()

@@ -57,10 +57,11 @@ namespace T02_Group01_PRG2Assignment
                 Tier = "ordinary";
             }
         }
-        public void AddPoints(double amount)
+        public void AddPoints(int pts)
         {
+            Points += pts;
             // Explicit Downcasting from double to int needed
-            points += (int)Math.Floor(amount * 0.72);
+            //points += (int)Math.Floor(amount * 0.72);
 
             // (a) (ii) Process an order and checkout (Additional Feature) =================
             if (Points >= 100)
