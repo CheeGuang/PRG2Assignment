@@ -34,7 +34,14 @@ namespace T02_Group01_PRG2Assignment
     {
         public static Dictionary<string, float> flavourMenuDict = new Dictionary<string, float>();
         public static Dictionary<string, float> toppingMenuDict = new Dictionary<string, float>();
-
+        public static List<float[]> cupPriceMenu = new List<float[]>();
+        public static List<float[]> conePriceMenu = new List<float[]>();
+        public static List<string[]> wafflePriceMenu = new List<string[]>();
+        public static int optScoopIdx = 0;
+        public static int optPriceIdx = 1;
+        public static int coneMenuDippedIdx = 2;
+        public static int waffleMenuFlavorIdx = 2;
+        public static Dictionary<int, Order> orderDict = new Dictionary<int, Order>(); 
         public static void DisplayOrder(IceCream iceCream)
         {
             Console.WriteLine(iceCream.ToString());
@@ -53,7 +60,7 @@ namespace T02_Group01_PRG2Assignment
     {
         static void Main(string[] args)
         {
-            // =============================================== Basic Features ==================================================
+                
 
             // Initialising Customers ==================================================
             Dictionary<string, Customer> customers = new Dictionary<string, Customer>();
@@ -68,52 +75,132 @@ namespace T02_Group01_PRG2Assignment
             InitialiseToppingMenu(Global.toppingMenuDict);
 
             // Initialising Options ====================================================
-            const int optScoopIdx = 0;
-            const int optPriceIdx = 1;
+            
 
-            List<float[]> cupPriceMenu = new List<float[]>();
-            List<float[]> conePriceMenu = new List<float[]>();
-            const int coneMenuDippedIdx = 2;
-
-            List<string[]> wafflePriceMenu = new List<string[]>();
-            const int waffleMenuFlavorIdx = 2;
+            InitialiseOptionMenu(Global.cupPriceMenu, Global.conePriceMenu, Global.wafflePriceMenu);
 
             // Initialising Orders =====================================================
             List<Order> orderList = new List<Order>();
-            InitialiseOrdersData(orderList, customers, Global.flavourMenuDict);//--------- COMMENTED OUT TO ALLOW TESTING (Feel free to uncomment) ------------ 
+            InitialiseOrdersData(orderList, customers, Global.flavourMenuDict);
 
 
-            // Q1 List all customers ===================================================
-            //ListAllCustomers(customers); // ------------ COMMENTED OUT TO ALLOW TESTING (Feel free to uncomment) ------------ 
-
-            // Q2 List all orders ======================================================
+            // Initialising Queues =====================================================
             Queue<Order> goldQueue = new Queue<Order>();
             Queue<Order> ordinaryQueue = new Queue<Order>();
-            // ListAllGoldRegOrders(goldQueue, ordinaryQueue);    // ------------ COMMENTED OUT TO ALLOW TESTING (Feel free to uncomment) ------------ 
 
-            // Q3 Register a new customer ==============================================
-            //RegisterCustomer(); // ------------ COMMENTED OUT TO ALLOW TESTING (Feel free to uncomment) ------------ 
+            // Initialise Test Data ====================================================
+            //Order order = new Order();
+            //order.AddIceCream(new Waffle(2, new List<Flavour> { new Flavour("Vanilla", false, 2) }, new List<Topping> { new Topping("Mochi") }, "Red Velvet"));
+            //goldQueue.Enqueue(order);
 
-            // Q4 Create a customer's order ============================================
-            //CreateOrder(customers, goldQueue, ordinaryQueue); // ------------ COMMENTED OUT TO ALLOW TESTING (Feel free to uncomment) ------------ 
+            //Order order2 = new Order();
+            //order2.AddIceCream(new Waffle(3, new List<Flavour> { new Flavour("Vanilla", false, 1), new Flavour("Durian", true, 2) }, new List<Topping> { new Topping("Mochi"), new Topping("Sago") }, "Red Velvet"));
+            //goldQueue.Enqueue(order2);
 
-            // Q5 Display Order Detail of Customer =====================================
-            //DisplayCustomerOrder(customers); // ------------ COMMENTED OUT TO ALLOW TESTING (Feel free to uncomment) ------------ 
+            //Order order3 = new Order();
+            //order3.AddIceCream(new Cup(1, new List<Flavour> { new Flavour("Chocolate", false, 1) }, new List<Topping> { new Topping("Sprinkles"), new Topping("Sago") }));
+            //ordinaryQueue.Enqueue(order3);
 
-            // Q6 Modify Order Detail ==================================================
-            //ModifyOrderDetails(customers); // ------------ COMMENTED OUT TO ALLOW TESTING (Feel free to uncomment) ------------ 
+            //Order order4 = new Order();
+            //order4.AddIceCream(new Cone(2, new List<Flavour> { new Flavour("Vanilla", false, 1), new Flavour("Ube", true, 1) }, new List<Topping> { new Topping("Mochi"), new Topping("Sago") }, true));
+            //ordinaryQueue.Enqueue(order4);
+            while (true)
+            {
+                try
+                {
+                    DisplayMenu();
+                    int option = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine();
+                    // =============================================== Basic Features ==================================================
+                    if (option == 1)
+                    {
+                        // Q1 List all customers ===================================================
+                        ListAllCustomers(customers);
+                    }
+                    else if (option == 2)
+                    {
+                        //Q2 List all orders ======================================================
+                       ListAllGoldRegOrders(goldQueue, ordinaryQueue);
+                    }
+                    else if (option == 3)
+                    {
+                        // Q3 Register a new customer ==============================================
+                        RegisterCustomer(customers);
+                    }
+                    else if (option == 4)
+                    {
+                        // Q4 Create a customer's order ============================================
+                        CreateOrder(customers, goldQueue, ordinaryQueue);
+                    }
+                    else if (option == 5)
+                    {
+                        // Q5 Display Order Detail of Customer =====================================
+                        DisplayCustomerOrder(customers);
+                    }
 
-            // ============================================== Advanced Features =================================================
-            // (a) Process an order and checkout ================================================================================
-            //ProcessOrderAndCheckout(goldQueue, ordinaryQueue);
+                    else if (option == 6)
+                    {
+                        // Q6 Modify Order Detail ==================================================
+                        ModifyOrderDetails(customers);
+                    }
+                    // ============================================== Advanced Features ================================================
+                    else if (option == 7)
+                    {
+                        try
+                        {
+                            // (a) Process an order and checkout ================================================================================
+                            ProcessOrderAndCheckout(goldQueue, ordinaryQueue, customers);
+                        }
+                        catch (InvalidOperationException)
+                        {
+                            Console.WriteLine("There is no orders in Gold and Ordinary Queue");
+                        }
+                        catch (InvalidDataException)
+                        {
+                            Console.WriteLine("No customer matches the current Order.");
+                        }
 
-            // (b) Display monthly charged amount breakdown & total charged amounts for the year ================================
-            DisplayCharges(customers);
-
-            // (c) Convert from SGD to specified Currency ===============================
-            //ConvertCurrency();                 ------------ COMMENTED OUT TO ALLOW TESTING (Do not leave it uncommented) -------
+                    }
+                    else if (option == 8)
+                    {
+                        // (b) Display monthly charged amount breakdown & total charged amounts for the year ================================
+                        DisplayCharges(customers);
+                    }
+                    else if (option == 9)
+                    {
+                        // (c) Convert from SGD to specified Currency ===============================
+                        ConvertCurrency();
+                    }
+                    else if (option == 0)
+                    {
+                        Console.WriteLine("Thank you for using Ice Cream Shop Management System. Good Bye!");
+                        break;
+                    }
+                    Console.WriteLine();
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Please enter a valid option");
+                }
+            }            
         }
 
+        static void DisplayMenu()
+        {
+            Console.WriteLine("---------------------------- Ice Cream Shop Management System ----------------------------");
+            Console.WriteLine("1) List all customers");
+            Console.WriteLine("2) List all current orders");
+            Console.WriteLine("3) Register a new customer");
+            Console.WriteLine("4) Create a customer’s order");
+            Console.WriteLine("5) Display order details of a customer");
+            Console.WriteLine("6) Modify order details");
+            Console.WriteLine("7) Process an order and checkout");
+            Console.WriteLine("8) Display monthly charged amounts breakdown & total charged amounts for the year");
+            Console.WriteLine("9) Convert from SGD to specified Currency");
+            Console.WriteLine("0) Exit");
+            Console.WriteLine("------------------------------------------------------------------------------------------");
+            Console.Write("Enter an option: ");
+        }
         // Initialising Customers =======================================================
         static void InitialiseCustomersData(Dictionary<string, Customer> customers)
         {
@@ -165,99 +252,208 @@ namespace T02_Group01_PRG2Assignment
                 while (line != null)
                 {
                     string[] lineDetail = line.Split(',');
-
-                    // Create Order ------------------------------------------------------------------------------------------------------------------------
-                    Order newOrder = new Order();
-                    newOrder.Id = Convert.ToInt32(lineDetail[orderId]);
-                    newOrder.TimeReceived = Convert.ToDateTime(lineDetail[timeRec]);
-
-                    // Determine if time fulfilled has a value ---------------------------------------------------------------------------------------------
-                    if (lineDetail[timeFul] != null)
+                    if (!Global.orderDict.ContainsKey(Convert.ToInt32(lineDetail[orderId])))
                     {
-                        newOrder.TimeFulfilled = Convert.ToDateTime(lineDetail[timeFul]);
-                    }
+                        // Create Order ------------------------------------------------------------------------------------------------------------------------
+                        Order newOrder = new Order();
+                        newOrder.Id = Convert.ToInt32(lineDetail[orderId]);
+                        newOrder.TimeReceived = Convert.ToDateTime(lineDetail[timeRec]);
 
-                    // Determine flavour -------------------------------------------------------------------------------------------------------------------
-                    List<Flavour> flavours = new List<Flavour>();
-                    string[] selectedFlavours = new string[] { lineDetail[flavour1], lineDetail[flavour2], lineDetail[flavour3] };
-
-                    foreach (string flavour in selectedFlavours)
-                    {
-                        // Check if there is anymore ice cream flavours in order to add
-                        if (flavour == "")
+                        // Determine if time fulfilled has a value ---------------------------------------------------------------------------------------------
+                        if (lineDetail[timeFul] != null)
                         {
-                            break;
+                            newOrder.TimeFulfilled = Convert.ToDateTime(lineDetail[timeFul]);
                         }
-                        else
+
+                        // Determine flavour -------------------------------------------------------------------------------------------------------------------
+                        List<Flavour> flavours = new List<Flavour>();
+                        string[] selectedFlavours = new string[] { lineDetail[flavour1].ToLower(), lineDetail[flavour2].ToLower(), lineDetail[flavour3].ToLower() };
+
+                        foreach (string flavour in selectedFlavours)
                         {
-                            // Check for repeated flavours in an order
-                            Flavour foundFlavour = flavours.FirstOrDefault(x => x.Type == flavour);
-                            if (foundFlavour != null)
+                            // Check if there is anymore ice cream flavours in order to add
+                            if (flavour == "")
                             {
-                                // Add quantity if repeated flavour
-                                foundFlavour.Quantity += 1;
+                                break;
                             }
                             else
                             {
-                                // Check if flavour is premium 
-                                if (flavourMenuDict[flavour.ToLower()] == 2)
+                                // Check for repeated flavours in an order
+                                Flavour foundFlavour = flavours.FirstOrDefault(x => x.Type == flavour);
+                                if (foundFlavour != null)
                                 {
-                                    flavours.Add(new Flavour(flavour, true, 1));
+                                    // Add quantity if repeated flavour
+                                    foundFlavour.Quantity += 1;
                                 }
                                 else
                                 {
-                                    flavours.Add(new Flavour(flavour, false, 1));
+                                    // Check if flavour is premium 
+                                    if (flavourMenuDict[flavour.ToLower()] == 2)
+                                    {
+                                        flavours.Add(new Flavour(flavour, true, 1));
+                                    }
+                                    else
+                                    {
+                                        flavours.Add(new Flavour(flavour, false, 1));
+                                    };
+                                    // End of checking if flavour is premium 
                                 };
-                                // End of checking if flavour is premium 
+                                // End of checking for repeated flavours in an order
                             };
-                            // End of checking for repeated flavours in an order
-                        };
-                        // End of checking if there is anymore ice cream flavours in order to add
-                    }
+                            // End of checking if there is anymore ice cream flavours in order to add
+                        }
 
-                    // Determine Number of Toppings --------------------------------------------------------------------------------------------------------
-                    int numToppings = 0;
-                    List<Topping> toppingList = new List<Topping>();
-                    string[] selectedToppings = new string[] { lineDetail[topping1], lineDetail[topping2], lineDetail[topping3], lineDetail[topping4] };
+                        // Determine Number of Toppings --------------------------------------------------------------------------------------------------------
+                        int numToppings = 0;
+                        List<Topping> toppingList = new List<Topping>();
+                        string[] selectedToppings = new string[] { lineDetail[topping1].ToLower(), lineDetail[topping2].ToLower(), lineDetail[topping3].ToLower(), lineDetail[topping4].ToLower() };
 
-                    foreach (string tmpTopping in selectedToppings)
-                    {
-                        if (tmpTopping == "")
+                        foreach (string tmpTopping in selectedToppings)
                         {
-                            break;
+                            if (tmpTopping == "")
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                toppingList.Add(new Topping(tmpTopping));
+                                numToppings++;
+                            }
+                        }
+
+                        // Determine Waffle, Cup or Cone and create the IceCream Object, then add to Order object ----------------------------------------------
+                        if (lineDetail[option] == "Waffle")
+                        {
+                            Waffle orderItem = new Waffle(Convert.ToInt32(lineDetail[scoops]), flavours, toppingList, lineDetail[waffleFlavour].ToLower());
+                            newOrder.AddIceCream(orderItem);
+                        }
+                        else if (lineDetail[option] == "Cone")
+                        {
+                            Cone orderItem = new Cone(Convert.ToInt32(lineDetail[scoops]), flavours, toppingList, Convert.ToBoolean(lineDetail[dipped].ToLower()));
+                            newOrder.AddIceCream(orderItem);
                         }
                         else
                         {
-                            toppingList.Add(new Topping(tmpTopping));
-                            numToppings++;
+                            Cup orderItem = new Cup(Convert.ToInt32(lineDetail[scoops]), flavours, toppingList);
+                            newOrder.AddIceCream(orderItem);
                         }
-                    }
 
-                    // Determine Waffle, Cup or Cone and create the IceCream Object, then add to Order object ----------------------------------------------
-                    if (lineDetail[option] == "Waffle")
-                    {
-                        Waffle orderItem = new Waffle(Convert.ToInt32(lineDetail[scoops]), flavours, toppingList, lineDetail[waffleFlavour]);
-                        newOrder.AddIceCream(orderItem);
-                    } 
-                    else if (lineDetail[option] == "Cone")
-                    {
-                        Cone orderItem = new Cone(Convert.ToInt32(lineDetail[scoops]), flavours, toppingList, Convert.ToBoolean(lineDetail[dipped].ToLower()));
-                        newOrder.AddIceCream(orderItem);
+                        // Add to the Order List
+                        orderList.Add(newOrder);
+
+                        // Add to orderDict
+                        Global.orderDict.Add(newOrder.Id, newOrder);
+
+                        if (newOrder.TimeFulfilled != null)
+                        {
+                            // Append to customer's order history
+                            string memID = lineDetail[memberId];
+                            customers[memID].OrderHistory.Add(newOrder);
+                        }
+
                     }
                     else
                     {
-                        Cup orderItem = new Cup(Convert.ToInt32(lineDetail[scoops]), flavours, toppingList);
-                        newOrder.AddIceCream(orderItem);
+                        // Determine flavour -------------------------------------------------------------------------------------------------------------------
+                        List<Flavour> flavours = new List<Flavour>();
+                        string[] selectedFlavours = new string[] { lineDetail[flavour1].ToLower(), lineDetail[flavour2].ToLower(), lineDetail[flavour3].ToLower() };
+
+                        foreach (string flavour in selectedFlavours)
+                        {
+                            // Check if there is anymore ice cream flavours in order to add
+                            if (flavour == "")
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                // Check for repeated flavours in an order
+                                Flavour foundFlavour = flavours.FirstOrDefault(x => x.Type == flavour);
+                                if (foundFlavour != null)
+                                {
+                                    // Add quantity if repeated flavour
+                                    foundFlavour.Quantity += 1;
+                                }
+                                else
+                                {
+                                    // Check if flavour is premium 
+                                    if (flavourMenuDict[flavour.ToLower()] == 2)
+                                    {
+                                        flavours.Add(new Flavour(flavour, true, 1));
+                                    }
+                                    else
+                                    {
+                                        flavours.Add(new Flavour(flavour, false, 1));
+                                    };
+                                    // End of checking if flavour is premium 
+                                };
+                                // End of checking for repeated flavours in an order
+                            };
+                            // End of checking if there is anymore ice cream flavours in order to add
+                        }
+
+                        // Determine Number of Toppings --------------------------------------------------------------------------------------------------------
+                        int numToppings = 0;
+                        List<Topping> toppingList = new List<Topping>();
+                        string[] selectedToppings = new string[] { lineDetail[topping1].ToLower(), lineDetail[topping2].ToLower(), lineDetail[topping3].ToLower(), lineDetail[topping4].ToLower() };
+
+                        foreach (string tmpTopping in selectedToppings)
+                        {
+                            if (tmpTopping == "")
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                toppingList.Add(new Topping(tmpTopping));
+                                numToppings++;
+                            }
+                        }
+
+                        // Determine Waffle, Cup or Cone and create the IceCream Object, then add to Order object ----------------------------------------------
+                        if (lineDetail[option] == "Waffle")
+                        {
+                            Waffle orderItem = new Waffle(Convert.ToInt32(lineDetail[scoops]), flavours, toppingList, lineDetail[waffleFlavour].ToLower());
+                            Global.orderDict[Convert.ToInt32(lineDetail[orderId])].AddIceCream(orderItem);
+                        }
+                        else if (lineDetail[option] == "Cone")
+                        {
+                            Cone orderItem = new Cone(Convert.ToInt32(lineDetail[scoops]), flavours, toppingList, Convert.ToBoolean(lineDetail[dipped].ToLower()));
+                            Global.orderDict[Convert.ToInt32(lineDetail[orderId])].AddIceCream(orderItem);
+                        }
+                        else
+                        {
+                            Cup orderItem = new Cup(Convert.ToInt32(lineDetail[scoops]), flavours, toppingList);
+                            Global.orderDict[Convert.ToInt32(lineDetail[orderId])].AddIceCream(orderItem);
+                        }
                     }
-
-                    // Add to the Order List
-                    orderList.Add(newOrder);
-
-                    // Append to customer's order history
-                    string memID = lineDetail[memberId];
-                    customers[memID].OrderHistory.Add(newOrder);
-
                     line = sr.ReadLine();
+                }
+
+                // Giving Rewards to Customers after initialising All Orders
+                foreach (Order order in Global.orderDict.Values)
+                {
+                    // Only Process Historical Orders
+                    if(order.TimeFulfilled != null)
+                    {
+                        Customer targetCustomer = new Customer();
+                        foreach (Customer customer in customers.Values)
+                        {
+                            foreach(Order orderHist in customer.OrderHistory)
+                            {
+                                if (order.Id == orderHist.Id)
+                                {
+                                    double finalBill = 0;
+                                    foreach (IceCream iceCream in order.IceCreamList)
+                                    {
+                                        finalBill += iceCream.CalculatePrice();
+                                        customer.Rewards.Punch();
+                                    }
+                                    customer.Rewards.AddPoints(Convert.ToInt32(Math.Floor(0.72*finalBill)));
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -337,7 +533,7 @@ namespace T02_Group01_PRG2Assignment
                     }else if (lineDetail[optionIdx].ToLower() == "waffle")
                     {
                         //flavours can only be stored as string
-                        String[] wScoopsPriceArray = new String[] { lineDetail[scoopsIdx], lineDetail[costIdx], lineDetail[waffleFlavourIdx] };
+                        String[] wScoopsPriceArray = new String[] { lineDetail[scoopsIdx], lineDetail[costIdx], lineDetail[waffleFlavourIdx].ToLower() };
                         wafflePriceMenu.Add(wScoopsPriceArray);
                     }
 
@@ -368,22 +564,7 @@ namespace T02_Group01_PRG2Assignment
         {
             Console.WriteLine("************* Gold Members Queue *************");
 
-            // Test Data ----- TO BE REMOVED -----
-            Order order = new Order();
-            order.AddIceCream(new Waffle(2, new List<Flavour> { new Flavour("Vanilla", false, 2) }, new List<Topping> { new Topping("Mochi") }, "Red Velvet"));
-            goldQueue.Enqueue(order);
-
-            Order order2 = new Order();
-            order2.AddIceCream(new Waffle(3, new List<Flavour> { new Flavour("Vanilla", false, 1), new Flavour("Durian", true, 2) }, new List<Topping> { new Topping("Mochi"), new Topping("Sago") }, "Red Velvet"));
-            goldQueue.Enqueue(order2);
-
-            Order order3 = new Order();
-            order3.AddIceCream(new Cup(1, new List<Flavour> { new Flavour("Chocolate", false, 1) }, new List<Topping> { new Topping("Sprinkles"), new Topping("Sago") }));
-            goldQueue.Enqueue(order3);
-
-            Order order4 = new Order();
-            order4.AddIceCream(new Cone(2, new List<Flavour> { new Flavour("Vanilla", false, 1), new Flavour("Ube", true, 1) }, new List<Topping> { new Topping("Mochi"), new Topping("Sago") }, true));
-            goldQueue.Enqueue(order4);
+            
 
             foreach (Order tmpOrder in goldQueue)
             {
@@ -419,12 +600,28 @@ namespace T02_Group01_PRG2Assignment
         }
 
         // Q3 Register a new customer ==================================================
-        static Customer RegisterCustomer()
+        static Customer RegisterCustomer(Dictionary<string,Customer> customers)
         {
-            Console.Write("Enter new customer Name: ");
-
-            string name = Console.ReadLine();
-            Console.WriteLine();
+            string name;
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Enter new customer Name: ");
+                    name = Console.ReadLine();
+                    //To prevent people from exploiting how csv works
+                    if (name.Contains(','))
+                    {
+                        throw new ArgumentException();
+                    }
+                    Console.WriteLine();
+                    break;
+                }
+                catch (ArgumentException)
+                {
+                    Console.WriteLine("Name must not contain ','");
+                }
+            }
 
             // Initilising memberID and dob so to allow new customer object to be instanciated.
             int memberID;
@@ -500,7 +697,8 @@ namespace T02_Group01_PRG2Assignment
             customer.Rewards = pointCard;
 
             // Appending Newly Registered to customers.csv
-            using (StreamWriter sw = new StreamWriter("customers.csv", true))
+            string writeCustomerPath = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(Directory.GetCurrentDirectory())), "customers.csv");
+            using (StreamWriter sw = new StreamWriter(writeCustomerPath, true))
             {
                 sw.WriteLine(customer.Name + ',' + customer.MemberId + ',' + customer.Dob.ToString("dd/MM/yyyy"));
             }
@@ -508,6 +706,7 @@ namespace T02_Group01_PRG2Assignment
             Console.WriteLine("Successfully Registered New Customer: " + customer.Name);
             Console.WriteLine();
             Console.WriteLine();
+            customers.Add(Convert.ToString(customer.MemberId), customer);
             return customer;
         }
 
@@ -546,27 +745,19 @@ namespace T02_Group01_PRG2Assignment
                 }
             }
 
+            // Q4b in Customer.cs
             customer.MakeOrder();
-
-            try
+            // Q4c
+            if (customer.Rewards.Tier.ToLower() == "ordinary" || customer.Rewards.Tier.ToLower() == "silver")
             {
-                if (customer.Rewards.Tier.ToLower() == "ordinary" || customer.Rewards.Tier.ToLower() == "silver")
-                {
-                    ordinaryQueue.Enqueue(customer.CurrentOrder);
-                }
-                else if (customer.Rewards.Tier.ToLower() == "gold")
-                {
-                    goldQueue.Enqueue(customer.CurrentOrder);
-                }
-
+                ordinaryQueue.Enqueue(customer.CurrentOrder);
             }
-            catch (Exception)
+            else if (customer.Rewards.Tier.ToLower() == "gold")
             {
-                Console.WriteLine("Order made was unsuccessfully");
+                goldQueue.Enqueue(customer.CurrentOrder);
             }
 
             Console.WriteLine("Order has been made successfully");
-
         }
 
 
@@ -1111,24 +1302,44 @@ namespace T02_Group01_PRG2Assignment
         // ============================================== Advanced Features ======================================================
 
         // (a) (i) Process an order and checkout =======================================
-        static void ProcessOrderAndCheckout(Queue<Customer> goldQueue, Queue<Customer> ordinaryQueue)
+        static void ProcessOrderAndCheckout(Queue<Order> goldQueue, Queue<Order> ordinaryQueue, Dictionary<string, Customer> customers)
         {
-            Customer currentCustomer;
+
+            Order currentOrder;
+            Customer currentCustomer = new Customer();
 
             // If there is a customer in Gold Queue, Dequeue Customer from goldQueue.
             if (goldQueue.Count != 0)
             {
-                currentCustomer = goldQueue.Dequeue();
+                currentOrder = goldQueue.Dequeue();
             }
 
-            // Else Dwqueue Customer from ordinaryQueue
+            // Else Dequeue Customer from ordinaryQueue
             else
             {
-                currentCustomer = ordinaryQueue.Dequeue();
+                currentOrder = ordinaryQueue.Dequeue();
             }
 
-            // Storing currentOrder
-            Order currentOrder = currentCustomer.CurrentOrder;
+            foreach(Customer customer in customers.Values)
+            {
+                try
+                {
+                    int currentCustomerOrderId = customer.CurrentOrder.Id;
+                    if (currentCustomerOrderId == currentOrder.Id)
+                    { 
+                        currentCustomer = customer;
+                    }
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+
+            if (currentCustomer == new Customer())
+            {
+                throw new InvalidDataException();
+            }
 
             // Storing currentPointCard
             PointCard currentPointCard = currentCustomer.Rewards;

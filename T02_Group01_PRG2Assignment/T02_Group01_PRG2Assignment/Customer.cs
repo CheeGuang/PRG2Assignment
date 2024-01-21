@@ -36,7 +36,18 @@ namespace T02_Group01_PRG2Assignment
 
         public Order CurrentOrder
         {
-            get { return currentOrder; }
+            get 
+            { 
+                try 
+                {
+                    return currentOrder;
+                    
+                }
+                catch
+                {
+                    throw new NullReferenceException();
+                }
+            }
             set { currentOrder = value; }
         }
         private List<Order> orderHistory = new List<Order>();
@@ -67,7 +78,7 @@ namespace T02_Group01_PRG2Assignment
             // Q4b Create a customer's order (Basic Features) ==============================
 
             // Creating newOrder
-            Order newOrder = new Order(orderHistory.Count, DateTime.Now);
+            Order newOrder = new Order(Global.orderDict.Count + 1, DateTime.Now);
 
             while (true)
             {
@@ -120,8 +131,19 @@ namespace T02_Group01_PRG2Assignment
                     }
                 }
 
-                List<string> regularFlavours = new List<string>() { "vanilla", "chocolate", "strawberry" };
-                List<string> premiumFlavours = new List<string>() { "durian", "ube", "sea salt" };
+                List<string> regularFlavours = new List<string>();
+                List<string> premiumFlavours = new List<string>();
+                foreach(KeyValuePair<string,float> flavour in Global.flavourMenuDict)
+                {
+                    if (flavour.Value == 0)
+                    {
+                        regularFlavours.Add(flavour.Key);
+                    }
+                    else
+                    {
+                        premiumFlavours.Add(flavour.Key);
+                    }
+                }
 
                 // Displaying Regular Flavours
                 Console.WriteLine("Available Regular Flavours:");
@@ -186,7 +208,11 @@ namespace T02_Group01_PRG2Assignment
 
 
                 // Ensure Toppings are valid
-                List<string> toppingsAvailable = new List<string>() { "sprinkles", "mochi", "sago", "oreos" };
+                List<string> toppingsAvailable = new List<string>();
+                foreach(string topping in Global.toppingMenuDict.Keys)
+                {
+                    toppingsAvailable.Add(topping);
+                }
 
                 // Displaying available Toppings
                 Console.WriteLine("Available Toppings:");
@@ -245,7 +271,7 @@ namespace T02_Group01_PRG2Assignment
                     {
                         try
                         {
-                            Console.Write("Do you want your cone Dipped in chocolate? (y, n): ");
+                            Console.Write("Do you want your cone Dipped in chocolate? (Y, N): ");
                             isDipped = Console.ReadLine();
 
                             if (isDipped != "y" && isDipped != "n")
@@ -334,6 +360,7 @@ namespace T02_Group01_PRG2Assignment
 
                 if (answer.ToLower() == "n")
                 {
+                    Global.orderDict.Add(newOrder.Id, newOrder);
                     break;
                 }
             }
@@ -351,7 +378,7 @@ namespace T02_Group01_PRG2Assignment
         }
         public override string ToString()
         {
-            return "Name: " + Name + "\tMemberID: " + MemberId + "\tDOB: " + Dob.ToString("dd MMMM yyyy");
+            return "Name: " + Name + "\tMemberID: " + MemberId + "\tDOB: " + Dob.ToString("dd MMMM yyyy") + "\tReward Points: " + Rewards.Points + "\tRewards Punch Card: " + Rewards.PunchCard + "\tTeir: " + Rewards.Tier;
         }
     }
 }

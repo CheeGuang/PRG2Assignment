@@ -62,11 +62,11 @@ namespace T02_Group01_PRG2Assignment
             Points += pts;
 
             // (a) (ii) Process an order and checkout (Additional Feature) =================
-            if (Points >= 100)
+            if (Points >= 100 && Tier != "gold")
             {
                 Tier = "gold";
             }
-            else if (Points >= 50)
+            else if (Points >= 50 && Tier == "ordinary")
             {
                 Tier = "silver";
             }

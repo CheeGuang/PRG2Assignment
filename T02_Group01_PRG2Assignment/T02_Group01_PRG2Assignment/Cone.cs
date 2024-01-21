@@ -4,6 +4,7 @@
 // Partner Name : Zou Ruining, Raeanne
 //==========================================================
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
@@ -32,34 +33,25 @@ namespace T02_Group01_PRG2Assignment
         {
             double total = 0;
 
-            // Defining the Pricing per Scoop
-            Dictionary<int, double> scoopPrice = new Dictionary<int, double>
+            // Accounting for Pricing of Scoops and Dipped
+            foreach (float[] coneRecord in Global.conePriceMenu)
             {
-                { 1, 4 },
-                { 2, 5.5 },
-                { 3, 6.5 }
-            };
-            total += scoopPrice[Flavours.Count()];
+                if (coneRecord[Global.optScoopIdx] == Scoops && coneRecord[Global.coneMenuDippedIdx] == Convert.ToInt16(Dipped))
+                {
+                    total += coneRecord[Global.optPriceIdx];
+                }
+            }
 
-            // Accounting for Premium Flavours
+            // Accounting for Flavours Price
             foreach (Flavour flavour in Flavours)
             {
-                if (flavour.Premium)
-                {
-                    total += 2;
-                }
+                total += Global.flavourMenuDict[flavour.Type.ToLower()] * flavour.Quantity;
             }
 
             // Accounting and adding to total for every Toppings
             foreach (Topping topping in Toppings)
             {
-                total++;
-            }
-
-            // Accounting for Dipped Cone
-            if(Dipped)
-            {
-                total += 2;
+                total += Global.toppingMenuDict[topping.Type.ToLower()];
             }
 
             return total;
