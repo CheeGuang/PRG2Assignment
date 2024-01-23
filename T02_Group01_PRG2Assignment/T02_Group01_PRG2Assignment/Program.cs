@@ -53,6 +53,7 @@ namespace T02_Group01_PRG2Assignment
             {
                 Console.WriteLine(tmpTopping.ToString());
             }
+            Console.WriteLine();
         }
     }
 
@@ -88,7 +89,7 @@ namespace T02_Group01_PRG2Assignment
             Queue<Order> goldQueue = new Queue<Order>();
             Queue<Order> ordinaryQueue = new Queue<Order>();
 
-            // Initialise Test Data ====================================================
+            //Initialise Test Data ====================================================
             //Order order = new Order();
             //order.AddIceCream(new Waffle(2, new List<Flavour> { new Flavour("Vanilla", false, 2) }, new List<Topping> { new Topping("Mochi") }, "Red Velvet"));
             //goldQueue.Enqueue(order);
@@ -893,20 +894,7 @@ namespace T02_Group01_PRG2Assignment
 
             // Get the selected customer object
             Customer selectedCustomer = customers[memberId];
-            
-            
-            
-            
-            // Test Data 
-            Order order = new Order();
-            order.AddIceCream(new Waffle(2, new List<Flavour> { new Flavour("Vanilla", false, 2) }, new List<Topping> { new Topping("Mochi") }, "Red Velvet"));
-            selectedCustomer.CurrentOrder = order;
-            
-            
-            
-            
-            
-            
+
             // Retrieve and display current order details of the selected customer
             Order selectedCustCurrentOrder = selectedCustomer.CurrentOrder;
             Console.WriteLine(selectedCustCurrentOrder.ToString());
@@ -1258,12 +1246,12 @@ namespace T02_Group01_PRG2Assignment
                                         Console.Write("Select which ice cream you would like to delete: ");
                                         int icIdxIp = Convert.ToInt32(Console.ReadLine());
 
-                                        if (icIdxIp < 0 || icIdxIp > selectedCustomer.CurrentOrder.IceCreamList.Count)
+                                        if (icIdxIp < 1 || icIdxIp > (selectedCustomer.CurrentOrder.IceCreamList.Count + 1))
                                         {
                                             throw new ArgumentOutOfRangeException();
                                         }
 
-                                        selectedCustomer.CurrentOrder.DeleteIceCream(icIdxIp);
+                                        selectedCustomer.CurrentOrder.DeleteIceCream(icIdxIp - 1);
                                         Console.WriteLine("Ice cream successfully deleted!");
                                     }
 
