@@ -1,7 +1,7 @@
 ﻿//==========================================================
-// Student Number : S10258143
-// Student Name : Lee Guang Le, Jeffrey
-// Partner Name : Zou Ruining Raeanne
+// Student Number : S10258772G
+// Student Name : Zou Ruining Raeanne
+// Partner Name : Lee Guang Le, Jeffrey
 //==========================================================
 
 using System;
@@ -51,14 +51,14 @@ namespace T02_Group01_PRG2Assignment
         }
         public void ModifyIceCream(int index)
         {
-            // Q6a Modify an Ice Cream (Basic Features) ==============================
+            // Q6a Modify an Ice Cream (Basic Features) 
             IceCream selectedIceCream = iceCreamList[index];
 
             while (true)
             {
                 try
                 {
-                    // Menu ------------------------------------------------------------------
+                    // Menu 
                     Console.WriteLine("\nWhat would you like to modify?");
                     Console.WriteLine("[1] Option (Cup/Cone/Waffle)");
                     Console.WriteLine("[2] Number of Scoops");
@@ -72,7 +72,7 @@ namespace T02_Group01_PRG2Assignment
 
                     switch(selectedNumber)
                     {
-                        case 1: // ===========================================================================================
+                        case 1: 
                             Console.Write("What would you like to change your Ice Cream option to (Cone, Cup, Waffle): ");
                             string iceCreamOption = Console.ReadLine().ToLower();
 
@@ -157,7 +157,7 @@ namespace T02_Group01_PRG2Assignment
                             }
                             break;
 
-                        case 2: // ===========================================================================================
+                        case 2: 
                             Console.Write("How many scoops of ice cream would you like (1 - 3): ");
                             int scoopsIp = Convert.ToInt32(Console.ReadLine());
 
@@ -234,7 +234,7 @@ namespace T02_Group01_PRG2Assignment
                             }
                             break;
 
-                        case 3: // ===========================================================================================
+                        case 3: 
                             Console.WriteLine("\n======================== Current Order ========================");
                             Global.DisplayOrder(selectedIceCream);
 
@@ -296,7 +296,7 @@ namespace T02_Group01_PRG2Assignment
 
                             break;
 
-                        case 4: // ===========================================================================================
+                        case 4: 
                             Console.WriteLine("\n======================== Current Order ========================");
                             Global.DisplayOrder(selectedIceCream);
 

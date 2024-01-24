@@ -30,6 +30,12 @@ using System.Web.UI.WebControls.WebParts;
 
 namespace T02_Group01_PRG2Assignment
 {
+    /**
+     * @brief   Static class to hold all static variables to be accessed by all other object classes
+     * @param   
+     * @return  
+     * @creator Raeanne
+     */
     static class Global 
     {
         public static Dictionary<string, float> flavourMenuDict = new Dictionary<string, float>();
@@ -59,25 +65,21 @@ namespace T02_Group01_PRG2Assignment
 
     internal class Program
     {
-        static void Main(string[] args)
+        //static void Main(string[] args)
+        static void Main()
         {
                 
-
             // Initialising Customers ==================================================
             Dictionary<string, Customer> customers = new Dictionary<string, Customer>();
             InitialiseCustomersData(customers);
 
             // Initialising Flavours ===================================================
-            //Dictionary<string,float> flavourMenuDict = new Dictionary<string, float>();
             InitialiseFlavourMenu(Global.flavourMenuDict);
 
             // Initialising Topping ====================================================
-            
             InitialiseToppingMenu(Global.toppingMenuDict);
 
             // Initialising Options ====================================================
-            
-
             InitialiseOptionMenu(Global.cupPriceMenu, Global.conePriceMenu, Global.wafflePriceMenu);
 
             // Initialising Orders =====================================================
@@ -89,22 +91,6 @@ namespace T02_Group01_PRG2Assignment
             Queue<Order> goldQueue = new Queue<Order>();
             Queue<Order> ordinaryQueue = new Queue<Order>();
 
-            //Initialise Test Data ====================================================
-            //Order order = new Order();
-            //order.AddIceCream(new Waffle(2, new List<Flavour> { new Flavour("Vanilla", false, 2) }, new List<Topping> { new Topping("Mochi") }, "Red Velvet"));
-            //goldQueue.Enqueue(order);
-
-            //Order order2 = new Order();
-            //order2.AddIceCream(new Waffle(3, new List<Flavour> { new Flavour("Vanilla", false, 1), new Flavour("Durian", true, 2) }, new List<Topping> { new Topping("Mochi"), new Topping("Sago") }, "Red Velvet"));
-            //goldQueue.Enqueue(order2);
-
-            //Order order3 = new Order();
-            //order3.AddIceCream(new Cup(1, new List<Flavour> { new Flavour("Chocolate", false, 1) }, new List<Topping> { new Topping("Sprinkles"), new Topping("Sago") }));
-            //ordinaryQueue.Enqueue(order3);
-
-            //Order order4 = new Order();
-            //order4.AddIceCream(new Cone(2, new List<Flavour> { new Flavour("Vanilla", false, 1), new Flavour("Ube", true, 1) }, new List<Topping> { new Topping("Mochi"), new Topping("Sago") }, true));
-            //ordinaryQueue.Enqueue(order4);
             while (true)
             {
                 try
@@ -112,44 +98,44 @@ namespace T02_Group01_PRG2Assignment
                     DisplayMenu();
                     int option = Convert.ToInt32(Console.ReadLine());
                     Console.WriteLine();
-                    // =============================================== Basic Features ==================================================
+                    
                     if (option == 1)
                     {
-                        // Q1 List all customers ===================================================
+                        // Q1 List all customers
                         ListAllCustomers(customers);
                     }
                     else if (option == 2)
                     {
-                        //Q2 List all orders ======================================================
+                        //Q2 List all orders
                        ListAllGoldRegOrders(goldQueue, ordinaryQueue);
                     }
                     else if (option == 3)
                     {
-                        // Q3 Register a new customer ==============================================
+                        // Q3 Register a new customer
                         RegisterCustomer(customers);
                     }
                     else if (option == 4)
                     {
-                        // Q4 Create a customer's order ============================================
+                        // Q4 Create a customer's order
                         CreateOrder(customers, goldQueue, ordinaryQueue);
                     }
                     else if (option == 5)
                     {
-                        // Q5 Display Order Detail of Customer =====================================
+                        // Q5 Display Order Detail of Customer 
                         DisplayCustomerOrder(customers);
                     }
 
                     else if (option == 6)
                     {
-                        // Q6 Modify Order Detail ==================================================
+                        // Q6 Modify Order Detail
                         ModifyOrderDetails(customers);
                     }
-                    // ============================================== Advanced Features ================================================
+                   
                     else if (option == 7)
                     {
                         try
                         {
-                            // (a) Process an order and checkout ================================================================================
+                            // (a) Process an order and checkout 
                             ProcessOrderAndCheckout(goldQueue, ordinaryQueue, customers);
                         }
                         catch (InvalidOperationException)
@@ -164,12 +150,12 @@ namespace T02_Group01_PRG2Assignment
                     }
                     else if (option == 8)
                     {
-                        // (b) Display monthly charged amount breakdown & total charged amounts for the year ================================
+                        // (b) Display monthly charged amount breakdown & total charged amounts for the year
                         DisplayCharges(customers);
                     }
                     else if (option == 9)
                     {
-                        // (c) Convert from SGD to specified Currency ===============================
+                        // (c) Convert from SGD to specified Currency 
                         ConvertCurrency();
                     }
                     else if (option == 0)
@@ -186,6 +172,12 @@ namespace T02_Group01_PRG2Assignment
             }            
         }
 
+     /**
+     * @brief Display Menu for user to interact with
+     * @param
+     * @return
+     * @creator Jeffrey
+     */
         static void DisplayMenu()
         {
             Console.WriteLine("---------------------------- Ice Cream Shop Management System ----------------------------");
@@ -202,7 +194,13 @@ namespace T02_Group01_PRG2Assignment
             Console.WriteLine("------------------------------------------------------------------------------------------");
             Console.Write("Enter an option: ");
         }
-        // Initialising Customers =======================================================
+
+        /**
+        * @brief    To read in customers.csv and initialise customer data
+        * @param    To store customer data in static variables declared in Global class
+        * @return   
+        * @creator  Jeffrey
+        */
         static void InitialiseCustomersData(Dictionary<string, Customer> customers)
         {
             // Getting Data from customers.csv
@@ -222,7 +220,12 @@ namespace T02_Group01_PRG2Assignment
             }
         }
 
-        // Initialising Orders =========================================================
+        /**
+        * @brief    To read in Orders.csv and initialise orders data
+        * @param    To store orders data in static variables declared in Global class
+        * @return   
+        * @creator  Raeanne
+        */
         static void InitialiseOrdersData(List<Order> orderList, Dictionary<string, Customer> customers, Dictionary<string, float> flavourMenuDict)
         {
             // Excel orders.csv data structure
@@ -255,18 +258,18 @@ namespace T02_Group01_PRG2Assignment
                     string[] lineDetail = line.Split(',');
                     if (!Global.orderDict.ContainsKey(Convert.ToInt32(lineDetail[orderId])))
                     {
-                        // Create Order ------------------------------------------------------------------------------------------------------------------------
+                        // Create Order 
                         Order newOrder = new Order();
                         newOrder.Id = Convert.ToInt32(lineDetail[orderId]);
                         newOrder.TimeReceived = Convert.ToDateTime(lineDetail[timeRec]);
 
-                        // Determine if time fulfilled has a value ---------------------------------------------------------------------------------------------
+                        // Determine if time fulfilled has a value 
                         if (lineDetail[timeFul] != null)
                         {
                             newOrder.TimeFulfilled = Convert.ToDateTime(lineDetail[timeFul]);
                         }
 
-                        // Determine flavour -------------------------------------------------------------------------------------------------------------------
+                        // Determine flavour 
                         List<Flavour> flavours = new List<Flavour>();
                         string[] selectedFlavours = new string[] { lineDetail[flavour1].ToLower(), lineDetail[flavour2].ToLower(), lineDetail[flavour3].ToLower() };
 
@@ -304,7 +307,7 @@ namespace T02_Group01_PRG2Assignment
                             // End of checking if there is anymore ice cream flavours in order to add
                         }
 
-                        // Determine Number of Toppings --------------------------------------------------------------------------------------------------------
+                        // Determine Number of Toppings 
                         int numToppings = 0;
                         List<Topping> toppingList = new List<Topping>();
                         string[] selectedToppings = new string[] { lineDetail[topping1].ToLower(), lineDetail[topping2].ToLower(), lineDetail[topping3].ToLower(), lineDetail[topping4].ToLower() };
@@ -322,7 +325,7 @@ namespace T02_Group01_PRG2Assignment
                             }
                         }
 
-                        // Determine Waffle, Cup or Cone and create the IceCream Object, then add to Order object ----------------------------------------------
+                        // Determine Waffle, Cup or Cone and create the IceCream Object, then add to Order object 
                         if (lineDetail[option] == "Waffle")
                         {
                             Waffle orderItem = new Waffle(Convert.ToInt32(lineDetail[scoops]), flavours, toppingList, lineDetail[waffleFlavour].ToLower());
@@ -355,7 +358,7 @@ namespace T02_Group01_PRG2Assignment
                     }
                     else
                     {
-                        // Determine flavour -------------------------------------------------------------------------------------------------------------------
+                        // Determine flavour 
                         List<Flavour> flavours = new List<Flavour>();
                         string[] selectedFlavours = new string[] { lineDetail[flavour1].ToLower(), lineDetail[flavour2].ToLower(), lineDetail[flavour3].ToLower() };
 
@@ -393,7 +396,7 @@ namespace T02_Group01_PRG2Assignment
                             // End of checking if there is anymore ice cream flavours in order to add
                         }
 
-                        // Determine Number of Toppings --------------------------------------------------------------------------------------------------------
+                        // Determine Number of Toppings 
                         int numToppings = 0;
                         List<Topping> toppingList = new List<Topping>();
                         string[] selectedToppings = new string[] { lineDetail[topping1].ToLower(), lineDetail[topping2].ToLower(), lineDetail[topping3].ToLower(), lineDetail[topping4].ToLower() };
@@ -411,7 +414,7 @@ namespace T02_Group01_PRG2Assignment
                             }
                         }
 
-                        // Determine Waffle, Cup or Cone and create the IceCream Object, then add to Order object ----------------------------------------------
+                        // Determine Waffle, Cup or Cone and create the IceCream Object, then add to Order object 
                         if (lineDetail[option] == "Waffle")
                         {
                             Waffle orderItem = new Waffle(Convert.ToInt32(lineDetail[scoops]), flavours, toppingList, lineDetail[waffleFlavour].ToLower());
@@ -459,9 +462,13 @@ namespace T02_Group01_PRG2Assignment
             }
         }
 
-        /// <summary>
-        /// Reading the Flavour csv and instantiating flavour (Dict contains flavourName : Cost)
-        /// </summary>
+
+        /**
+        * @brief    To read in Flavours.csv and initialise flavours data (name and cost)
+        * @param    To store flavours data in static variables declared in Global class
+        * @return   
+        * @creator  Raeanne
+        */
         static void InitialiseFlavourMenu(Dictionary<string, float> flavourMenuDict)
         {
             using (StreamReader sr = new StreamReader("flavours.csv"))
@@ -479,9 +486,12 @@ namespace T02_Group01_PRG2Assignment
             }
         }
 
-        /// <summary>
-        /// Reading the Topping csv and instantiating flavour (Dict contains flavourName : Cost)
-        /// </summary>
+        /**
+        * @brief    To read in Toppings.csv and initialise topping data (name, cost)
+        * @param    To store topping data in static variables declared in Global class 
+        * @return   
+        * @creator  Raeanne
+        */
         static void InitialiseToppingMenu(Dictionary<string, float> toppingMenuDict)
         {
             using (StreamReader sr = new StreamReader("toppings.csv"))
@@ -499,9 +509,12 @@ namespace T02_Group01_PRG2Assignment
             }
         }
 
-        /// <summary>
-        /// Reading the Options csv and instantiating flavour (Dict contains flavourName : Cost)
-        /// </summary>
+         /**
+         * @brief   To read in Options.csv and initialise option data
+         * @param   To store option data in static variables declared in Global class 
+         * @return  
+         * @creator Raeanne
+         */
         static void InitialiseOptionMenu(List<float[]>cupPriceMenu, List<float[]> conePriceMenu, List<String[]> wafflePriceMenu)
         {
             int optionIdx = 0;
@@ -545,7 +558,12 @@ namespace T02_Group01_PRG2Assignment
 
         // ================================================ Basic Features ======================================================
 
-        // Q1 List all customers =======================================================
+        /**
+        * @brief    Q1 To list all customers
+        * @param    To get customers data in static variables declared in Global class
+        * @return   
+        * @creator  Jeffrey
+        */
         static void ListAllCustomers(Dictionary<string, Customer> customers)
         {
             foreach (Customer customer in customers.Values)
@@ -556,16 +574,15 @@ namespace T02_Group01_PRG2Assignment
             Console.WriteLine();
         }
 
-        // Q2 List all orders ==========================================================
-        /// <summary>
-        /// Missing: Need to check for Gold or Regular then print
-        /// </summary>
-        /// <param name="orders"></param>
+         /**
+         * @brief   Q2 List all orders in Gold Queue and Regular Queue
+         * @param   Sorted queues by membership
+         * @return  
+         * @creator Raeanne
+         */
         static void ListAllGoldRegOrders(Queue<Order> goldQueue, Queue<Order> ordinaryQueue)
         {
             Console.WriteLine("************* Gold Members Queue *************");
-
-            
 
             foreach (Order tmpOrder in goldQueue)
             {
@@ -600,7 +617,12 @@ namespace T02_Group01_PRG2Assignment
 
         }
 
-        // Q3 Register a new customer ==================================================
+        /**
+        * @brief    To register a new customer
+        * @param    To insert new customers data in static variables declared in Global class 
+        * @return
+        * @creator  Jeffrey
+        */
         static Customer RegisterCustomer(Dictionary<string,Customer> customers)
         {
             string name;
@@ -711,7 +733,12 @@ namespace T02_Group01_PRG2Assignment
             return customer;
         }
 
-        // Q4a Create a customer's order ===============================================
+        /**
+        * @brief    Q4a To create a customer's order
+        * @param     
+        * @return   
+        * @creator  Jeffrey
+        */
         static void CreateOrder(Dictionary<string, Customer> customers, Queue<Order> goldQueue, Queue<Order> ordinaryQueue)
         {
 
@@ -761,15 +788,19 @@ namespace T02_Group01_PRG2Assignment
             Console.WriteLine("Order has been made successfully");
         }
 
-
-        // Q5 Display Selected customer's order ========================================
+        /**
+        * @brief    Q5 To display selected customer's order
+        * @param    List of all customers to be printed on console for customer's reference & display selected customer's order
+        * @return
+        * @creator  Raeanne
+        */
         static void DisplayCustomerOrder(Dictionary<string, Customer> customers)
         {
             // List all customers
             ListAllCustomers(customers);
 
             //Initialise memberId
-            string memberId = "";
+            string memberId;
 
             //User Prompt
             while (true)
@@ -851,14 +882,19 @@ namespace T02_Group01_PRG2Assignment
             // End of checking for past orders
         }
 
-        // Q6 Modify order details =====================================================
+        /**
+        * @brief    Q6 To handle the modification of order details
+        * @param    List of all customers to be printed on console for customer's reference & update selected customer's order
+        * @return
+        * @creator  Raeanne
+        */
         static void ModifyOrderDetails(Dictionary<string, Customer> customers)
         {
             // List all customers
             ListAllCustomers(customers);
 
             // Initialise memberId
-            string memberId = "";
+            string memberId;
 
             //User Prompt
             while (true)
@@ -930,7 +966,7 @@ namespace T02_Group01_PRG2Assignment
                     switch (option)
                     {
                         case 1:
-                            // To Modify Ice Cream ---------------------------------------------------------------------------------------------
+                            // To Modify Ice Cream 
                             if (selectedCustomer.CurrentOrder.IceCreamList.Count() == 1)
                             {
                                 selectedCustomer.CurrentOrder.ModifyIceCream(0);
@@ -982,7 +1018,7 @@ namespace T02_Group01_PRG2Assignment
                             break;
 
                         case 2:
-                            // Create new Ice Cream --------------------------------------------------------------------------------------------
+                            // Create new Ice Cream 
                             // If no current order, create a new order
                             if(selectedCustomer.CurrentOrder == null)
                             {
@@ -1000,7 +1036,7 @@ namespace T02_Group01_PRG2Assignment
                             List<Flavour> selectedFlavourList = new List<Flavour>();
                             List<Topping> selectedToppingList = new List<Topping>();
 
-                            // For Option ------------------------------------------------------------
+                            // For Option 
                             while (true)
                             {
                                 try
@@ -1081,7 +1117,7 @@ namespace T02_Group01_PRG2Assignment
                                 }
                             }
 
-                            // Input Number of Scoops ------------------------------------------------
+                            // Input Number of Scoops
                             while (true)
                             {
                                 try
@@ -1114,7 +1150,7 @@ namespace T02_Group01_PRG2Assignment
                                 }
                             }
 
-                            // Input Flavours --------------------------------------------------------
+                            // Input Flavours
                             Console.WriteLine("\n======================== Flavour Menu ========================");
                             foreach (string tmpFlavour in Global.flavourMenuDict.Keys)
                             {
@@ -1174,7 +1210,7 @@ namespace T02_Group01_PRG2Assignment
                             {
                                 try
                                 {
-                                    // User input for number of toppings --------------------------------
+                                    // User input for number of toppings
                                     Console.Write("How many toppings would you like to add (0 - 4): ");
                                     numToppingIp = Convert.ToInt32(Console.ReadLine());
 
@@ -1184,7 +1220,7 @@ namespace T02_Group01_PRG2Assignment
                                         Console.Write("How many toppings would you like to add (0 - 4): ");
                                         numToppingIp = Convert.ToInt32(Console.ReadLine());
                                     }
-                                    // User input for adding toppings -----------------------------------
+                                    // User input for adding toppings
                                     if (numToppingIp == 0){
                                         Console.WriteLine("No toppings added!");
                                     }
@@ -1230,7 +1266,7 @@ namespace T02_Group01_PRG2Assignment
                             break;
 
                         case 3:
-                            // Delete Ice Cream Object -----------------------------------------------------------------------------------------
+                            // Delete Ice Cream Object 
                             // If ice cream object is the last, pop up warning that they cannot have 0 ice cream in order
 
                             while (true)
@@ -1285,11 +1321,15 @@ namespace T02_Group01_PRG2Assignment
                 }
             }
         }
-        // End of function
 
         // ============================================== Advanced Features ======================================================
 
-        // (a) (i) Process an order and checkout =======================================
+        /**
+        * @brief   (a)(i) Process an order and checkout
+        * @param    
+        * @return
+        * @creator  Jeffrey
+        */
         static void ProcessOrderAndCheckout(Queue<Order> goldQueue, Queue<Order> ordinaryQueue, Dictionary<string, Customer> customers)
         {
 
@@ -1459,11 +1499,17 @@ namespace T02_Group01_PRG2Assignment
             // Add this fulfilled order object to the customer’s order history
             currentCustomer.OrderHistory.Add(currentOrder);
         }
-        // (b) Display monthly charged amt breakdown  =================================
+
+        /**
+        * @brief    (b) Display monthly charged amt breakdown
+        * @param    Get all orders from customers to facilitate calculation of charges for display purpose
+        * @return
+        * @creator  Raeanne
+        */
         static public void DisplayCharges(Dictionary<string, Customer> customers)
         {
             // Validate Year ----------------------------------------------------------
-            int yearIp = 0;
+            int yearIp;
             while (true)
             {
                 try
@@ -1482,7 +1528,7 @@ namespace T02_Group01_PRG2Assignment
                 catch { Console.WriteLine("This is an invalid input. Please try again."); } 
             }
 
-            // Consolidate all the orders ---------------------------------------------
+            // Consolidate all the orders 
             List<Order> consolidatedOrders = new List<Order>();
 
             foreach (Customer tmpCustomer in customers.Values)
@@ -1524,8 +1570,12 @@ namespace T02_Group01_PRG2Assignment
             Console.WriteLine("\nTotal: \t\t${0:0.00}", totalAmt);
         }
 
-
-        // (c) (Jeffrey) Convert from SGD to specified Currency ========================
+        /**
+        * @brief    (c) Convert from SGD to specified currency
+        * @param    
+        * @return
+        * @creator  Jeffrey
+        */
         static public void ConvertCurrency()
         {
             List<string> availableCurrencies = new List<string>() { "AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD", "AWG", "AZN", "BAM", "BBD", "BDT", "BGN", "BHD", "BIF", "BMD", "BND", "BOB", "BOV", "BRL", "BSD", "BTN", "BWP", "BYN", "BZD", "CAD", "CDF", "CHF", "CLF", "CLP", "CNY", "COP", "CRC", "CUC", "CUP", "CVE", "CZK", "DJF", "DKK", "DOP", "DZD", "EGP", "ERN", "ETB", "EUR", "FJD", "FKP", "GBP", "GEL", "GHS", "GIP", "GMD", "GNF", "GTQ", "GYD", "HKD", "HNL", "HRK", "HTG", "HUF", "IDR", "ILS", "INR", "IQD", "IRR", "ISK", "JMD", "JOD", "JPY", "KES", "KGS", "KHR", "KMF", "KPW", "KRW", "KWD", "KYD", "KZT", "LAK", "LBP", "LKR", "LRD", "LSL", "LTL", "LVL", "LYD", "MAD", "MDL", "MGA", "MKD", "MMK", "MNT", "MOP", "MRO", "MUR", "MVR", "MWK", "MXN", "MYR", "MZN", "NAD", "NGN", "NIO", "NOK", "NPR", "NZD", "OMR", "PAB", "PEN", "PGK", "PHP", "PKR", "PLN", "PYG", "QAR", "RON", "RSD", "RUB", "RWF", "SAR", "SBD", "SCR", "SDG", "SEK", "SGD", "SHP", "SLL", "SOS", "SRD", "SSP", "STD", "SVC", "SYP", "SZL", "THB", "TJS", "TMT", "TND", "TOP", "TRY", "TTD", "TWD", "TZS", "UAH", "UGX", "USD", "UYU", "UZS", "VEF", "VND", "VUV", "WST", "XAF", "XCD", "XOF", "XPF", "YER", "ZAR", "ZMW", "ZWL" };
@@ -1579,7 +1629,12 @@ namespace T02_Group01_PRG2Assignment
             }
         }
 
-        // Getting the Converted Amount by calling CurrencyBeacon's Convert API Endpoint
+        /**
+        * @brief    Getting the Converted Amount by calling CurrencyBeacon's Convert API Endpoint
+        * @param    
+        * @return
+        * @creator  Jeffrey
+        */
         static public double GetConvertedAmount(double amount, string convertTo)
         {
             string apiKey = "ZP5D2ofy27CdcrkWlvFDFyHoZLDI40vR";
@@ -1621,8 +1676,13 @@ namespace T02_Group01_PRG2Assignment
             return -1;
         }
     }
-
-    // Created Classes to store Response from CurrencyBeacon's Convert API Endpoint
+     
+    /**
+    * @brief    Created Classes to store Response from CurrencyBeacon's Convert API Endpoint
+    * @param    
+    * @return
+    * @creator  Jeffrey
+    */
     public class Rootobject
     {
         public Meta meta { get; set; }
@@ -1635,12 +1695,26 @@ namespace T02_Group01_PRG2Assignment
         public float value { get; set; }
     }
 
+
+    /**
+    * @brief    
+    * @param    
+    * @return
+    * @creator  
+    */
     public class Meta
     {
         public int code { get; set; }
         public string disclaimer { get; set; }
     }
 
+
+    /**
+    * @brief 
+    * @param    
+    * @return
+    * @creator  
+    */
     public class Response
     {
         public int timestamp { get; set; }
