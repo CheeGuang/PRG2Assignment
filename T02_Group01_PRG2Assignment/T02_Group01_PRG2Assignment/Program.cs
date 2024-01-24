@@ -155,8 +155,20 @@ namespace T02_Group01_PRG2Assignment
                     }
                     else if (option == 9)
                     {
-                        // (c) Convert from SGD to specified Currency 
-                        ConvertCurrency();
+                        try
+                        {
+                            // (c) Convert from SGD to specified Currency 
+                            ProcessOrderAndCheckoutWithForeignCurrency(goldQueue, ordinaryQueue, customers);
+                        }
+                        catch (InvalidOperationException)
+                        {
+                            Console.WriteLine("There is no orders in Gold and Ordinary Queue");
+                        }
+                        catch (InvalidDataException)
+                        {
+                            Console.WriteLine("No customer matches the current Order.");
+                        }
+                        
                     }
                     else if (option == 0)
                     {
@@ -1478,6 +1490,7 @@ namespace T02_Group01_PRG2Assignment
             // Prompt user to press any key to make payment
             Console.Write("\nPress any key to make payment: ");
             Console.ReadLine();
+            Console.WriteLine("\nPayment successful! Enjoy your Ice-Cream and have a nice day!!");
 
             // Increment the punch card for every ice cream in the order (if it goes above 10 just set it back down to 10)
             for (int i = 0; i < currentOrder.IceCreamList.Count; i++)
@@ -1571,12 +1584,197 @@ namespace T02_Group01_PRG2Assignment
         }
 
         /**
-        * @brief    (c) Convert from SGD to specified currency
+        * @brief    (c) Process order by paying with Foreign currency
         * @param    
         * @return
         * @creator  Jeffrey
         */
-        static public void ConvertCurrency()
+
+        static void ProcessOrderAndCheckoutWithForeignCurrency(Queue<Order> goldQueue, Queue<Order> ordinaryQueue, Dictionary<string, Customer> customers)
+        {
+
+            Order currentOrder;
+            Customer currentCustomer = new Customer();
+
+            // If there is a customer in Gold Queue, Dequeue Customer from goldQueue.
+            if (goldQueue.Count != 0)
+            {
+                currentOrder = goldQueue.Dequeue();
+            }
+
+            // Else Dequeue Customer from ordinaryQueue
+            else
+            {
+                currentOrder = ordinaryQueue.Dequeue();
+            }
+
+            foreach (Customer customer in customers.Values)
+            {
+                try
+                {
+                    int currentCustomerOrderId = customer.CurrentOrder.Id;
+                    if (currentCustomerOrderId == currentOrder.Id)
+                    {
+                        currentCustomer = customer;
+                    }
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+
+            if (currentCustomer == new Customer())
+            {
+                throw new InvalidDataException();
+            }
+
+            // Storing currentPointCard
+            PointCard currentPointCard = currentCustomer.Rewards;
+
+            // display all the ice creams in the order
+            foreach (IceCream iceCream in currentOrder.IceCreamList)
+            {
+                Console.WriteLine(iceCream.ToString());
+            }
+            Console.WriteLine();
+
+            // display the total bill amount in SGD
+            double totalBillSGD = currentOrder.CalculateTotal();
+            Console.WriteLine("Total Bill: SGD$" + totalBillSGD.ToString("0.00"));
+
+            // display the membership status & points of the customer
+            Console.WriteLine("Membership Status: " + currentPointCard.Tier);
+            Console.WriteLine();
+
+            // For Validation of Q4 Part 6
+            bool isMostExpensiveIceCreamAtIndex0 = true;
+
+            // Check if it is the customer’s birthday, and if it is, calculate the final bill while having the most expensive ice cream in the order cost $0.00
+            if (currentCustomer.IsBirthday())
+            {
+                IceCream mostExpensiveIceCream;
+
+                // Temporarily storing most expensive ice cream as the first ice cream in IceCreamList
+                mostExpensiveIceCream = currentOrder.IceCreamList[0];
+
+                // Looking for most Expensive Ice Cream in IceCreamList. Start from 1 to skip the first ice cream added.
+                for (int i = 1; i < currentOrder.IceCreamList.Count; i++)
+                {
+                    if (currentOrder.IceCreamList[i].CalculatePrice() > mostExpensiveIceCream.CalculatePrice())
+                    {
+                        mostExpensiveIceCream = currentOrder.IceCreamList[i];
+                        isMostExpensiveIceCreamAtIndex0 = false;
+                    }
+                }
+
+                // Setting most expensive ice cream in the order's cost as $0.00
+                totalBillSGD -= mostExpensiveIceCream.CalculatePrice();
+
+                // Checking if Most Expensive IceCream At Index 0
+            }
+
+            // Check if the customer has completed their punch card. If so, then calculate the final bill while having the first ice cream in their order cost $0.00 and reset their punch card back to 0
+            if (currentPointCard.PunchCard == 10)
+            {
+                // Checking if the first ice cream's total price was already set to $0
+                if (!isMostExpensiveIceCreamAtIndex0)
+                {
+                    totalBillSGD -= currentOrder.IceCreamList[0].CalculatePrice();
+                }
+                // If first ice cream already set to $0, make 2nd ice cream price's $0
+                else
+                {
+                    totalBillSGD -= currentOrder.IceCreamList[1].CalculatePrice();
+                }
+
+                // Resets punch card back to 0 will be done at the End
+            }
+
+            // Check Pointcard status to determine if the customer can redeem points. If they cannot, skip to displaying the final bill amount
+            if (currentPointCard.Tier.ToLower() != "ordinary")
+            {
+                while (true)
+                {
+                    int noOfPointsToRedeem;
+
+                    // Ensuring Input value is an Integer
+                    try
+                    {
+                        Console.Write("Enter number of points to redeem to offset final bill (Enter 0 to not Redeem any points): ");
+                        noOfPointsToRedeem = Convert.ToInt32(Console.ReadLine());
+
+                        if (noOfPointsToRedeem == 0)
+                        {
+                            break;
+                        }
+                    }
+                    catch (FormatException)
+                    {
+                        Console.WriteLine("Please Enter an Integer.");
+                        continue;
+                    }
+
+                    // Ensuring Point Card has sufficient Points to be redeemed
+                    try
+                    {
+                        currentPointCard.RedeemPoints(noOfPointsToRedeem);
+                        totalBillSGD -= noOfPointsToRedeem * 0.02;
+                        break;
+                    }
+                    catch (ArgumentException)
+                    {
+
+                        Console.WriteLine("Insufficient Points in Point Card");
+                        continue;
+                    }
+                }
+
+            }
+
+
+
+
+            Console.WriteLine();
+            // Convert Total Bill to SGD and Display total amount
+            double convertedAmount = ConvertCurrency(totalBillSGD);
+
+
+
+
+
+            // Prompt user to press any key to make payment
+            Console.Write("\nPress any key to make payment: ");
+            Console.ReadLine();
+            Console.WriteLine("\nPayment successful! Enjoy your Ice-Cream and have a nice day!!");
+            // Increment the punch card for every ice cream in the order (if it goes above 10 just set it back down to 10)
+            for (int i = 0; i < currentOrder.IceCreamList.Count; i++)
+            {
+                currentPointCard.Punch();
+            }
+
+            // Earn points
+            // Explicit Downcasting from double to int needed
+            int pointsEarned = (int)Math.Floor(0.72 * totalBillSGD);
+            currentPointCard.AddPoints(pointsEarned);
+
+            // While earning points, upgrade the member status accordingly
+            // Done in PointCard AddPoints() method
+
+            // Mark the order as fulfilled with the current datetime
+            currentOrder.TimeFulfilled = DateTime.Now;
+
+            // Add this fulfilled order object to the customer’s order history
+            currentCustomer.OrderHistory.Add(currentOrder);
+        }
+
+        /**
+        * @brief    Convert from SGD to specified currency
+        * @param    
+        * @return
+        * @creator  Jeffrey
+        */
+        static public double ConvertCurrency(double amountSGD)
         {
             List<string> availableCurrencies = new List<string>() { "AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD", "AWG", "AZN", "BAM", "BBD", "BDT", "BGN", "BHD", "BIF", "BMD", "BND", "BOB", "BOV", "BRL", "BSD", "BTN", "BWP", "BYN", "BZD", "CAD", "CDF", "CHF", "CLF", "CLP", "CNY", "COP", "CRC", "CUC", "CUP", "CVE", "CZK", "DJF", "DKK", "DOP", "DZD", "EGP", "ERN", "ETB", "EUR", "FJD", "FKP", "GBP", "GEL", "GHS", "GIP", "GMD", "GNF", "GTQ", "GYD", "HKD", "HNL", "HRK", "HTG", "HUF", "IDR", "ILS", "INR", "IQD", "IRR", "ISK", "JMD", "JOD", "JPY", "KES", "KGS", "KHR", "KMF", "KPW", "KRW", "KWD", "KYD", "KZT", "LAK", "LBP", "LKR", "LRD", "LSL", "LTL", "LVL", "LYD", "MAD", "MDL", "MGA", "MKD", "MMK", "MNT", "MOP", "MRO", "MUR", "MVR", "MWK", "MXN", "MYR", "MZN", "NAD", "NGN", "NIO", "NOK", "NPR", "NZD", "OMR", "PAB", "PEN", "PGK", "PHP", "PKR", "PLN", "PYG", "QAR", "RON", "RSD", "RUB", "RWF", "SAR", "SBD", "SCR", "SDG", "SEK", "SGD", "SHP", "SLL", "SOS", "SRD", "SSP", "STD", "SVC", "SYP", "SZL", "THB", "TJS", "TMT", "TND", "TOP", "TRY", "TTD", "TWD", "TZS", "UAH", "UGX", "USD", "UYU", "UZS", "VEF", "VND", "VUV", "WST", "XAF", "XCD", "XOF", "XPF", "YER", "ZAR", "ZMW", "ZWL" };
 
@@ -1592,7 +1790,7 @@ namespace T02_Group01_PRG2Assignment
                 Console.Write($"{availableCurrencies[i]}, ");
 
             }
-
+            Console.WriteLine();
             // Ensuring Currrency to convert to is valid
             string convertTo;
             while (true)
@@ -1615,17 +1813,17 @@ namespace T02_Group01_PRG2Assignment
                 }
             }
 
-            Console.Write("Enter amount: ");
-            double amount = Convert.ToDouble(Console.ReadLine());
-            double convertedAmount = GetConvertedAmount(amount, convertTo);
+            double convertedAmount = GetConvertedAmount(amountSGD, convertTo);
 
             if (convertedAmount != -1)
             {
-                Console.WriteLine($"Aount to pay in {convertTo.ToUpper()}: ${convertedAmount.ToString("0.00")}\n\n");
+                Console.WriteLine($"\nConverted Final Bill: {convertTo.ToUpper()}${convertedAmount.ToString("0.00")}\n");
+                return convertedAmount;
             }
             else
             {
                 Console.WriteLine("API Call Unsuccessful.");
+                return -1;
             }
         }
 
@@ -1695,26 +1893,12 @@ namespace T02_Group01_PRG2Assignment
         public float value { get; set; }
     }
 
-
-    /**
-    * @brief    
-    * @param    
-    * @return
-    * @creator  
-    */
     public class Meta
     {
         public int code { get; set; }
         public string disclaimer { get; set; }
     }
 
-
-    /**
-    * @brief 
-    * @param    
-    * @return
-    * @creator  
-    */
     public class Response
     {
         public int timestamp { get; set; }
