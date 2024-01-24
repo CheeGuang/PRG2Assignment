@@ -129,6 +129,11 @@ namespace T02_Group01_PRG2Assignment
                         Console.WriteLine("Number of Scoops must be between 1 and 3.");
                         Console.WriteLine();
                     }
+                    catch (FormatException)
+                    {
+                        Console.WriteLine("Please enter a number between 1 and 3.");
+                        Console.WriteLine();
+                    }
                 }
 
                 List<string> regularFlavours = new List<string>();
@@ -230,7 +235,7 @@ namespace T02_Group01_PRG2Assignment
                         try
                         {
                             Console.Write("Enter the Toppings you want (Enter 'X' to Exit): ");
-                            selectedTopping = Console.ReadLine();
+                            selectedTopping = Console.ReadLine().ToLower();
 
                             // If selectedTopping == 'x', Exit.
                             if (selectedTopping.ToLower() == "x")
@@ -300,7 +305,7 @@ namespace T02_Group01_PRG2Assignment
                 else
                 {
                     string selectedWaffleFlavour;
-                    List<string> waffleFlavourAvailable = new List<string>() { "red velvet", "charcoal", "pandan" };
+                    List<string> waffleFlavourAvailable = new List<string>() { "original", "red velvet", "charcoal", "pandan" };
 
                     // Displaying available waffle flavours
                     Console.WriteLine("Available Waffle Flavours:");

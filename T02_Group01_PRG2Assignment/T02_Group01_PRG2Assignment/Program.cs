@@ -744,7 +744,7 @@ namespace T02_Group01_PRG2Assignment
 
             ListAllCustomers(customers);
 
-            // Initilising memberID, customer, option, scoops, flavours, toppingList and iceCream so to allow new customer object to be instantiated.
+            // Initilising memberID, customer so to allow new customer object to be instantiated.
             int memberID;
             Customer customer;
 
