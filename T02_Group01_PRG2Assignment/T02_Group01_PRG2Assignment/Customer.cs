@@ -383,7 +383,7 @@ namespace T02_Group01_PRG2Assignment
         }
         public override string ToString()
         {
-            return "Name: " + Name + "\tMemberID: " + MemberId + "\tDOB: " + Dob.ToString("dd MMMM yyyy") + "\tReward Points: " + Rewards.Points + "\tRewards Punch Card: " + Rewards.PunchCard + "\tTeir: " + Rewards.Tier;
+            return "Name: " + Name + "\tMemberID: " + MemberId + "\tDOB: " + Dob.ToString("dd MMMM yyyy") + "\tReward Points: " + Rewards.Points + "\tRewards Punch Card: " + Rewards.PunchCard + "\tTier: " + Rewards.Tier;
         }
     }
 }

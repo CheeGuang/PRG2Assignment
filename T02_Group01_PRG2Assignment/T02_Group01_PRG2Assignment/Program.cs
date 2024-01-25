@@ -168,7 +168,11 @@ namespace T02_Group01_PRG2Assignment
                         {
                             Console.WriteLine("No customer matches the current Order.");
                         }
-                        
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.Message);
+                        }
+
                     }
                     else if (option == 0)
                     {
@@ -180,6 +184,12 @@ namespace T02_Group01_PRG2Assignment
                 catch (FormatException)
                 {
                     Console.WriteLine("Please enter a valid option");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine();
+                    continue;
                 }
             }            
         }
@@ -656,6 +666,10 @@ namespace T02_Group01_PRG2Assignment
                 {
                     Console.WriteLine("Name must not contain ','");
                 }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
             }
 
             // Initilising memberID and dob so to allow new customer object to be instanciated.
@@ -695,6 +709,12 @@ namespace T02_Group01_PRG2Assignment
                     Console.WriteLine("Member ID must be Unique");
                     Console.WriteLine();
                 }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine();
+                    continue;
+                }
 
             }
 
@@ -723,6 +743,10 @@ namespace T02_Group01_PRG2Assignment
                 {
 
                     Console.WriteLine("Date of Birth must be in the following Format: dd/MM/yyyy"); ;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
                 }
 
             }
@@ -769,7 +793,10 @@ namespace T02_Group01_PRG2Assignment
                     Console.Write("Enter Customer's MemberID: ");
                     memberID = Convert.ToInt32(Console.ReadLine());
                     customer = customers[Convert.ToString(memberID)];
-
+                    if(customer.CurrentOrder != null)
+                    {
+                        throw new ArgumentException();
+                    }
                     Console.WriteLine();
                     break;
                 }
@@ -782,6 +809,17 @@ namespace T02_Group01_PRG2Assignment
                 {
                     Console.WriteLine("Please enter a Member ID that exists.");
                     Console.WriteLine();
+                }
+                catch (ArgumentException)
+                {
+                    Console.WriteLine("Please process your current order before making a new order.");
+                    Console.WriteLine();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine();
+                    continue;
                 }
             }
 
@@ -837,7 +875,7 @@ namespace T02_Group01_PRG2Assignment
                     }
 
                 }
-                catch
+                catch (Exception)
                 {
                     Console.WriteLine("An invalid response has been entered. Please try again.");
                 };
@@ -932,7 +970,7 @@ namespace T02_Group01_PRG2Assignment
 
                     }
                 }
-                catch
+                catch (Exception)
                 {
                     Console.WriteLine("An invalid response has been entered. Please try again.");
                 };
@@ -1015,9 +1053,11 @@ namespace T02_Group01_PRG2Assignment
                                 {
                                     Console.WriteLine($"Please enter 1 - {selectedCustomer.CurrentOrder.IceCreamList.Count()}.");
                                 }
-                                catch
+                                catch (Exception e)
                                 {
-                                    Console.WriteLine("You have entered an invalid input.");
+                                    Console.WriteLine(e.Message);
+                                    Console.WriteLine();
+                                    continue;
                                 }
                             }
 
@@ -1123,7 +1163,7 @@ namespace T02_Group01_PRG2Assignment
                                 {
                                     Console.WriteLine("You have entered an invalid option. Please enter waffle, cone or cup.");
                                 }
-                                catch
+                                catch (Exception)
                                 {
                                     Console.WriteLine("You have entered an invalid option. Please try again.");
                                 }
@@ -1156,7 +1196,7 @@ namespace T02_Group01_PRG2Assignment
                                 {
                                     Console.WriteLine("Please enter a whole number between 1 and 3.");
                                 }
-                                catch
+                                catch (Exception)
                                 {
                                     Console.WriteLine("You have entered an invalid option. Please re-enter.");
                                 }
@@ -1263,7 +1303,7 @@ namespace T02_Group01_PRG2Assignment
                                 {
                                     Console.WriteLine("Please enter a valid whole number (0 - 4)");
                                 }
-                                catch
+                                catch (Exception)
                                 {
                                     Console.WriteLine("You have entered an invalid input. Please try again.");
                                 }
@@ -1319,6 +1359,10 @@ namespace T02_Group01_PRG2Assignment
                                 {
                                     Console.WriteLine("This is not a valid index. Please re-enter.");
                                 }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine(e.Message);
+                                }
                             }
                             break;
                         
@@ -1327,9 +1371,11 @@ namespace T02_Group01_PRG2Assignment
                     }
                     break;
                 }
-                catch
+                catch (Exception e)
                 {
-                    Console.WriteLine("An invalid option is entered. Please enter a valid option.");
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine();
+                    continue;
                 }
             }
         }
@@ -1370,8 +1416,10 @@ namespace T02_Group01_PRG2Assignment
                         currentCustomer = customer;
                     }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine();
                     continue;
                 }
             }
@@ -1453,6 +1501,7 @@ namespace T02_Group01_PRG2Assignment
                     // Ensuring Input value is an Integer
                     try
                     {
+                        Console.WriteLine($"You currently have {currentPointCard.Points} Points.");
                         Console.Write("Enter number of points to redeem to offset final bill (Enter 0 to not Redeem any points): ");
                         noOfPointsToRedeem = Convert.ToInt32(Console.ReadLine());
 
@@ -1463,13 +1512,31 @@ namespace T02_Group01_PRG2Assignment
                     }
                     catch (FormatException)
                     {
-                        Console.WriteLine("Please Enter an Integer.");
+                        Console.WriteLine("Please Enter an Integer.\n");
                         continue;
                     }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                        Console.WriteLine();
+                        continue;
+                    }
+
+
 
                     // Ensuring Point Card has sufficient Points to be redeemed
                     try
                     {
+                        if (currentPointCard.Points < noOfPointsToRedeem)
+                        {
+                            throw new ArgumentException();
+                        }
+                        // Ensuring Points is lower than total bill
+                        if (totalBill < noOfPointsToRedeem * 0.02)
+                        {
+                            noOfPointsToRedeem = (int)Math.Floor(totalBill / 0.02);
+                            Console.WriteLine($"As your points redeemed exceeded the total bill, you will redeem {noOfPointsToRedeem} Points instead.");
+                        }
                         currentPointCard.RedeemPoints(noOfPointsToRedeem);
                         totalBill -= noOfPointsToRedeem * 0.02;
                         break;
@@ -1477,7 +1544,13 @@ namespace T02_Group01_PRG2Assignment
                     catch (ArgumentException)
                     {
 
-                        Console.WriteLine("Insufficient Points in Point Card");
+                        Console.WriteLine("Insufficient Points in Point Card\n");
+                        continue;
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                        Console.WriteLine();
                         continue;
                     }
                 }
@@ -1511,6 +1584,9 @@ namespace T02_Group01_PRG2Assignment
 
             // Add this fulfilled order object to the customer’s order history
             currentCustomer.OrderHistory.Add(currentOrder);
+
+            // Remove CurrentOrder from Customer
+            currentCustomer.CurrentOrder = null;
         }
 
         /**
@@ -1538,7 +1614,12 @@ namespace T02_Group01_PRG2Assignment
                 }
                 catch (FormatException) { Console.WriteLine("It should be a 4 digit whole number. Please retry"); }
                 catch (ArgumentException) { Console.WriteLine("Ensure it is a valid 4 digit number. Please retry."); }
-                catch { Console.WriteLine("This is an invalid input. Please try again."); } 
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine();
+                    continue;
+                }
             }
 
             // Consolidate all the orders 
@@ -1618,8 +1699,10 @@ namespace T02_Group01_PRG2Assignment
                         currentCustomer = customer;
                     }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine();
                     continue;
                 }
             }
@@ -1701,6 +1784,7 @@ namespace T02_Group01_PRG2Assignment
                     // Ensuring Input value is an Integer
                     try
                     {
+                        Console.WriteLine($"You currently have {currentPointCard.Points} Points.");
                         Console.Write("Enter number of points to redeem to offset final bill (Enter 0 to not Redeem any points): ");
                         noOfPointsToRedeem = Convert.ToInt32(Console.ReadLine());
 
@@ -1711,13 +1795,32 @@ namespace T02_Group01_PRG2Assignment
                     }
                     catch (FormatException)
                     {
-                        Console.WriteLine("Please Enter an Integer.");
+                        Console.WriteLine("Please Enter an Integer.\n");
                         continue;
                     }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                        Console.WriteLine();
+                        continue;
+                    }
+
+
+
 
                     // Ensuring Point Card has sufficient Points to be redeemed
                     try
                     {
+                        if (currentPointCard.Points < noOfPointsToRedeem)
+                        {
+                            throw new ArgumentException();
+                        }
+                        // Ensuring Points is lower than total bill
+                        if (totalBillSGD < noOfPointsToRedeem * 0.02)
+                        {
+                            noOfPointsToRedeem = (int)Math.Floor(totalBillSGD / 0.02);
+                            Console.WriteLine($"As your points redeemed exceeded the total bill, you will redeem {noOfPointsToRedeem} Points instead.");
+                        }
                         currentPointCard.RedeemPoints(noOfPointsToRedeem);
                         totalBillSGD -= noOfPointsToRedeem * 0.02;
                         break;
@@ -1725,7 +1828,7 @@ namespace T02_Group01_PRG2Assignment
                     catch (ArgumentException)
                     {
 
-                        Console.WriteLine("Insufficient Points in Point Card");
+                        Console.WriteLine("Insufficient Points in Point Card\n");
                         continue;
                     }
                 }
@@ -1737,7 +1840,7 @@ namespace T02_Group01_PRG2Assignment
 
             Console.WriteLine();
             // Convert Total Bill to SGD and Display total amount
-            double convertedAmount = ConvertCurrency(totalBillSGD);
+            ConvertCurrency(totalBillSGD);
 
 
 
@@ -1766,6 +1869,9 @@ namespace T02_Group01_PRG2Assignment
 
             // Add this fulfilled order object to the customer’s order history
             currentCustomer.OrderHistory.Add(currentOrder);
+
+            // Remove CurrentOrder from Customer
+            currentCustomer.CurrentOrder = null;
         }
 
         /**
@@ -1774,7 +1880,7 @@ namespace T02_Group01_PRG2Assignment
         * @return
         * @creator  Jeffrey
         */
-        static public double ConvertCurrency(double amountSGD)
+        static public void ConvertCurrency(double amountSGD)
         {
             List<string> availableCurrencies = new List<string>() { "AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD", "AWG", "AZN", "BAM", "BBD", "BDT", "BGN", "BHD", "BIF", "BMD", "BND", "BOB", "BOV", "BRL", "BSD", "BTN", "BWP", "BYN", "BZD", "CAD", "CDF", "CHF", "CLF", "CLP", "CNY", "COP", "CRC", "CUC", "CUP", "CVE", "CZK", "DJF", "DKK", "DOP", "DZD", "EGP", "ERN", "ETB", "EUR", "FJD", "FKP", "GBP", "GEL", "GHS", "GIP", "GMD", "GNF", "GTQ", "GYD", "HKD", "HNL", "HRK", "HTG", "HUF", "IDR", "ILS", "INR", "IQD", "IRR", "ISK", "JMD", "JOD", "JPY", "KES", "KGS", "KHR", "KMF", "KPW", "KRW", "KWD", "KYD", "KZT", "LAK", "LBP", "LKR", "LRD", "LSL", "LTL", "LVL", "LYD", "MAD", "MDL", "MGA", "MKD", "MMK", "MNT", "MOP", "MRO", "MUR", "MVR", "MWK", "MXN", "MYR", "MZN", "NAD", "NGN", "NIO", "NOK", "NPR", "NZD", "OMR", "PAB", "PEN", "PGK", "PHP", "PKR", "PLN", "PYG", "QAR", "RON", "RSD", "RUB", "RWF", "SAR", "SBD", "SCR", "SDG", "SEK", "SGD", "SHP", "SLL", "SOS", "SRD", "SSP", "STD", "SVC", "SYP", "SZL", "THB", "TJS", "TMT", "TND", "TOP", "TRY", "TTD", "TWD", "TZS", "UAH", "UGX", "USD", "UYU", "UZS", "VEF", "VND", "VUV", "WST", "XAF", "XCD", "XOF", "XPF", "YER", "ZAR", "ZMW", "ZWL" };
 
@@ -1818,12 +1924,10 @@ namespace T02_Group01_PRG2Assignment
             if (convertedAmount != -1)
             {
                 Console.WriteLine($"\nConverted Final Bill: {convertTo.ToUpper()}${convertedAmount.ToString("0.00")}\n");
-                return convertedAmount;
             }
             else
             {
                 Console.WriteLine("API Call Unsuccessful.");
-                return -1;
             }
         }
 
@@ -1865,6 +1969,10 @@ namespace T02_Group01_PRG2Assignment
             {
                 Console.WriteLine($"HTTP Request Exception: {ex.Message}");
                 // Handle exceptions related to the request itself
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
             }
             finally
             {

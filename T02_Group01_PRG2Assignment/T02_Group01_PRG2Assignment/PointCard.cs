@@ -73,11 +73,8 @@ namespace T02_Group01_PRG2Assignment
         }
         public void RedeemPoints(int pts)
         {
-            if (Points < pts)
-            {
-                throw new ArgumentException();
-            }
-            else if (Tier.ToLower() != "ordinary")
+            
+            if (Tier.ToLower() != "ordinary")
             {
                 points -= pts;
             }
