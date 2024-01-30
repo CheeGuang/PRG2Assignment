@@ -581,13 +581,14 @@ namespace T02_Group01_PRG2Assignment
         // ================================================ Basic Features ======================================================
 
         /**
-        * @brief    Q1 To list all customers
-        * @param    To get customers data in static variables declared in Global class
+        * @brief    Q1 list all customers
+        * @param    Dictionary of all customer data
         * @return   
         * @creator  Jeffrey
         */
         static void ListAllCustomers(Dictionary<string, Customer> customers)
         {
+            // Iterating each value in the customers dictionary and displaying it
             foreach (Customer customer in customers.Values)
             {
                 Console.WriteLine(customer.ToString());
@@ -640,16 +641,18 @@ namespace T02_Group01_PRG2Assignment
         }
 
         /**
-        * @brief    To register a new customer
-        * @param    To insert new customers data in static variables declared in Global class 
+        * @brief    Q3 Register a new customer
+        * @param    Dictionary of all customer data
         * @return
         * @creator  Jeffrey
         */
         static Customer RegisterCustomer(Dictionary<string,Customer> customers)
         {
+            // Initilising name to allow new customer object to be instanciated.
             string name;
             while (true)
             {
+                // Ensure customer name cannot have comma to prevent user from tampering with CSV
                 try
                 {
                     Console.Write("Enter new customer Name: ");
@@ -672,13 +675,14 @@ namespace T02_Group01_PRG2Assignment
                 }
             }
 
-            // Initilising memberID and dob so to allow new customer object to be instanciated.
+            // Initilising memberID and dob to allow new customer object to be instanciated.
             int memberID;
             DateTime dob;
 
             // Ensure Member ID given by User is Unique
             while (true)
             {
+                // Ensure Member ID is an interger and is Unique
                 try
                 {
                     Console.Write("Enter new customer Member ID (Must be an Integer): ");
@@ -688,6 +692,7 @@ namespace T02_Group01_PRG2Assignment
                         sr.ReadLine();
                         for (int i = 1; i < File.ReadAllLines("customers.csv").Count(); i++)
                         {
+                            // Checking if memberID already exists
                             string[] lineDetail = sr.ReadLine().Trim().Split(',');
                             if (memberID == Convert.ToInt32(lineDetail[1]))
                             {
@@ -751,6 +756,7 @@ namespace T02_Group01_PRG2Assignment
 
             }
 
+            // Creating new customer with input from user
             Customer customer = new Customer(name, memberID, dob);
             PointCard pointCard = new PointCard();
             customer.Rewards = pointCard;
@@ -777,7 +783,7 @@ namespace T02_Group01_PRG2Assignment
         */
         static void CreateOrder(Dictionary<string, Customer> customers, Queue<Order> goldQueue, Queue<Order> ordinaryQueue)
         {
-
+            // List Customer Details
             ListAllCustomers(customers);
 
             // Initilising memberID, customer so to allow new customer object to be instantiated.
@@ -785,7 +791,7 @@ namespace T02_Group01_PRG2Assignment
             Customer customer;
 
 
-            // Enrsure MemberID is Valid and Exists
+            // Enrsure MemberID is Valid, Exists and does not have a current order
             while (true)
             {
                 try
@@ -793,6 +799,7 @@ namespace T02_Group01_PRG2Assignment
                     Console.Write("Enter Customer's MemberID: ");
                     memberID = Convert.ToInt32(Console.ReadLine());
                     customer = customers[Convert.ToString(memberID)];
+                    // Ensuring Customer has no current order
                     if(customer.CurrentOrder != null)
                     {
                         throw new ArgumentException();
@@ -825,7 +832,9 @@ namespace T02_Group01_PRG2Assignment
 
             // Q4b in Customer.cs
             customer.MakeOrder();
+            
             // Q4c
+            // Enqueueing customers in their corresponding queue
             if (customer.Rewards.Tier.ToLower() == "ordinary" || customer.Rewards.Tier.ToLower() == "silver")
             {
                 ordinaryQueue.Enqueue(customer.CurrentOrder);
@@ -1383,14 +1392,14 @@ namespace T02_Group01_PRG2Assignment
         // ============================================== Advanced Features ======================================================
 
         /**
-        * @brief   (a)(i) Process an order and checkout
-        * @param    
+        * @brief    (a)(i) Process an order and checkout
+        * @param    Gold, Ordinary queue and Customers Dictionary
         * @return
         * @creator  Jeffrey
         */
         static void ProcessOrderAndCheckout(Queue<Order> goldQueue, Queue<Order> ordinaryQueue, Dictionary<string, Customer> customers)
         {
-
+            // Initialising currentOrder and currentCustomer variables
             Order currentOrder;
             Customer currentCustomer = new Customer();
 
@@ -1406,6 +1415,7 @@ namespace T02_Group01_PRG2Assignment
                 currentOrder = ordinaryQueue.Dequeue();
             }
 
+            // Getting the corresponding customer that made the target order
             foreach(Customer customer in customers.Values)
             {
                 try
@@ -1424,6 +1434,7 @@ namespace T02_Group01_PRG2Assignment
                 }
             }
 
+            // Ensuring current customer is not a completely new customer object
             if (currentCustomer == new Customer())
             {
                 throw new InvalidDataException();
@@ -1666,7 +1677,7 @@ namespace T02_Group01_PRG2Assignment
 
         /**
         * @brief    (c) Process order by paying with Foreign currency
-        * @param    
+        * @param    Gold, Ordinary queue and Customers Dictionary
         * @return
         * @creator  Jeffrey
         */
@@ -1876,18 +1887,20 @@ namespace T02_Group01_PRG2Assignment
 
         /**
         * @brief    Convert from SGD to specified currency
-        * @param    
+        * @param    Amount of SGD to convert
         * @return
         * @creator  Jeffrey
         */
         static public void ConvertCurrency(double amountSGD)
         {
+            // Available country code 
             List<string> availableCurrencies = new List<string>() { "AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD", "AWG", "AZN", "BAM", "BBD", "BDT", "BGN", "BHD", "BIF", "BMD", "BND", "BOB", "BOV", "BRL", "BSD", "BTN", "BWP", "BYN", "BZD", "CAD", "CDF", "CHF", "CLF", "CLP", "CNY", "COP", "CRC", "CUC", "CUP", "CVE", "CZK", "DJF", "DKK", "DOP", "DZD", "EGP", "ERN", "ETB", "EUR", "FJD", "FKP", "GBP", "GEL", "GHS", "GIP", "GMD", "GNF", "GTQ", "GYD", "HKD", "HNL", "HRK", "HTG", "HUF", "IDR", "ILS", "INR", "IQD", "IRR", "ISK", "JMD", "JOD", "JPY", "KES", "KGS", "KHR", "KMF", "KPW", "KRW", "KWD", "KYD", "KZT", "LAK", "LBP", "LKR", "LRD", "LSL", "LTL", "LVL", "LYD", "MAD", "MDL", "MGA", "MKD", "MMK", "MNT", "MOP", "MRO", "MUR", "MVR", "MWK", "MXN", "MYR", "MZN", "NAD", "NGN", "NIO", "NOK", "NPR", "NZD", "OMR", "PAB", "PEN", "PGK", "PHP", "PKR", "PLN", "PYG", "QAR", "RON", "RSD", "RUB", "RWF", "SAR", "SBD", "SCR", "SDG", "SEK", "SGD", "SHP", "SLL", "SOS", "SRD", "SSP", "STD", "SVC", "SYP", "SZL", "THB", "TJS", "TMT", "TND", "TOP", "TRY", "TTD", "TWD", "TZS", "UAH", "UGX", "USD", "UYU", "UZS", "VEF", "VND", "VUV", "WST", "XAF", "XCD", "XOF", "XPF", "YER", "ZAR", "ZMW", "ZWL" };
 
             // Displaying supported currencies
             Console.WriteLine("Available Currencies to Convert To:");
             for (int i = 1; i < availableCurrencies.Count; i++)
             {
+                // Display 20 country code per row
                 if (i % 20 == 0)
                 {
                     Console.WriteLine(availableCurrencies[i]);
@@ -1897,6 +1910,7 @@ namespace T02_Group01_PRG2Assignment
 
             }
             Console.WriteLine();
+
             // Ensuring Currrency to convert to is valid
             string convertTo;
             while (true)
@@ -1919,6 +1933,7 @@ namespace T02_Group01_PRG2Assignment
                 }
             }
 
+            // Calling Foreign Currency Converter API and storing results in convertedAmount
             double convertedAmount = GetConvertedAmount(amountSGD, convertTo);
 
             if (convertedAmount != -1)
@@ -1933,7 +1948,7 @@ namespace T02_Group01_PRG2Assignment
 
         /**
         * @brief    Getting the Converted Amount by calling CurrencyBeacon's Convert API Endpoint
-        * @param    
+        * @param    Amount in SGD to convert and the country code to convert to
         * @return
         * @creator  Jeffrey
         */
