@@ -82,12 +82,14 @@ namespace T02_Group01_PRG2Assignment
 
             while (true)
             {
+                // Delcaring Variables to create IceCream object
                 IceCream iceCreamOrdered;
                 string option;
                 int scoops;
                 List<Flavour> flavours = new List<Flavour>();
                 List<Topping> toppings = new List<Topping>();
 
+                // Ensure option is either cup, cone or waffle
                 while (true)
                 {
                     try
@@ -108,7 +110,15 @@ namespace T02_Group01_PRG2Assignment
                         Console.WriteLine("Choose between Cup, Cone or Waffle.");
                         Console.WriteLine();
                     }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                        Console.WriteLine();
+                        continue;
+                    }
                 }
+
+                // Ensure number of scoops is within 1 to 3
                 while (true)
                 {
                     try
@@ -134,8 +144,15 @@ namespace T02_Group01_PRG2Assignment
                         Console.WriteLine("Please enter a number between 1 and 3.");
                         Console.WriteLine();
                     }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                        Console.WriteLine();
+                        continue;
+                    }
                 }
 
+                // Initialsing List of Regular and Premium Flavours
                 List<string> regularFlavours = new List<string>();
                 List<string> premiumFlavours = new List<string>();
                 foreach(KeyValuePair<string,float> flavour in Global.flavourMenuDict)
@@ -149,6 +166,9 @@ namespace T02_Group01_PRG2Assignment
                         premiumFlavours.Add(flavour.Key);
                     }
                 }
+
+                // Display Flavour Menu Header
+                Console.WriteLine("======================= Flavour Menu =========================");
 
                 // Displaying Regular Flavours
                 Console.WriteLine("Available Regular Flavours:");
@@ -166,10 +186,13 @@ namespace T02_Group01_PRG2Assignment
                 }
                 Console.WriteLine();
 
+                // Intialsing Selected Flavour Dictionary
                 Dictionary<string, int> selectedFlavours = new Dictionary<string, int>();
+
                 // Ensure Selected Flavours are valid
                 for (int i = 0; i < scoops; i++)
                 {
+                    // Ensures Selected FLavour is valid
                     while (true)
                     {
                         try
@@ -197,6 +220,12 @@ namespace T02_Group01_PRG2Assignment
                             Console.WriteLine("Flavour unavailable.");
                             Console.WriteLine();
                         }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.Message);
+                            Console.WriteLine();
+                            continue;
+                        }
 
                     }
                 }
@@ -211,16 +240,16 @@ namespace T02_Group01_PRG2Assignment
 
                 Console.WriteLine();
 
-
-                // Ensure Toppings are valid
+                // Adding available toppings from CSV to toppingsAvailable
                 List<string> toppingsAvailable = new List<string>();
                 foreach(string topping in Global.toppingMenuDict.Keys)
                 {
                     toppingsAvailable.Add(topping);
                 }
 
+                Console.WriteLine("====================== Toppings Menu =========================");
+
                 // Displaying available Toppings
-                Console.WriteLine("Available Toppings:");
                 foreach (string topping in toppingsAvailable)
                 {
                     Console.WriteLine(topping);
@@ -229,6 +258,7 @@ namespace T02_Group01_PRG2Assignment
 
                 for (int i = 0; i < 4; i++)
                 {
+                    // Ensure Selected Toppings are valid
                     string selectedTopping;
                     while (true)
                     {
@@ -257,6 +287,12 @@ namespace T02_Group01_PRG2Assignment
                             Console.WriteLine("Topping unavailable.");
                             Console.WriteLine();
                         }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.Message);
+                            Console.WriteLine();
+                            continue;
+                        }
 
                     }
                     if (selectedTopping.ToLower() == "x")
@@ -265,12 +301,16 @@ namespace T02_Group01_PRG2Assignment
                     }
                 }
 
+                // Logic to create Cup IceCream
                 if (option.ToLower() == "cup")
                 {
                     iceCreamOrdered = new Cup(scoops, flavours, toppings);
                 }
+
+                // Logic to create Cone IceCream
                 else if (option.ToLower() == "cone")
                 {
+                    // Ensure User enters y or n
                     string isDipped;
                     while (true)
                     {
@@ -290,6 +330,12 @@ namespace T02_Group01_PRG2Assignment
 
                             Console.WriteLine("Enter either 'y' or 'n'."); ;
                         }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.Message);
+                            Console.WriteLine();
+                            continue;
+                        }
                     }
 
 
@@ -302,18 +348,22 @@ namespace T02_Group01_PRG2Assignment
                         iceCreamOrdered = new Cone(scoops, flavours, toppings, false);
                     }
                 }
+
+                // Logic to create Waffle IceCream
                 else
                 {
                     string selectedWaffleFlavour;
                     List<string> waffleFlavourAvailable = new List<string>() { "original", "red velvet", "charcoal", "pandan" };
 
                     // Displaying available waffle flavours
-                    Console.WriteLine("Available Waffle Flavours:");
+                    Console.WriteLine("=================== Waffle Flavour Menu ======================");
                     foreach (string waffleFlavour in waffleFlavourAvailable)
                     {
                         Console.WriteLine(waffleFlavour);
                     }
                     Console.WriteLine();
+
+                    // Ensures selectedWaffleFlavour is valid
                     while (true)
                     {
                         try
@@ -333,16 +383,25 @@ namespace T02_Group01_PRG2Assignment
 
                             Console.WriteLine("Enter a valid Waffle Flavour."); ;
                         }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.Message);
+                            Console.WriteLine();
+                            continue;
+                        }
                     }
 
 
                     iceCreamOrdered = new Waffle(scoops, flavours, toppings, selectedWaffleFlavour);
                 }
 
+                // Adding the newly created iceCream to the newOrder's IceCreamList
                 newOrder.AddIceCream(iceCreamOrdered);
 
                 string answer;
 
+                // Prompt user if they want to order another iceCream
+                // Ensure answer is y or n
                 while (true)
                 {
                     try
@@ -360,6 +419,12 @@ namespace T02_Group01_PRG2Assignment
                     {
 
                         Console.WriteLine("Enter either 'Y' or 'N'."); ;
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                        Console.WriteLine();
+                        continue;
                     }
                 }
 
@@ -383,7 +448,7 @@ namespace T02_Group01_PRG2Assignment
         }
         public override string ToString()
         {
-            return "Name: " + Name + "\tMemberID: " + MemberId + "\tDOB: " + Dob.ToString("dd MMMM yyyy") + "\tReward Points: " + Rewards.Points + "\tRewards Punch Card: " + Rewards.PunchCard + "\tTier: " + Rewards.Tier;
+            return string.Format("| {0,-10} | {1,-15} | {2,-14} | {3,-7} | {4,-6} | {5, -12} |", MemberId, Name, Dob.ToString("dd/MM/yyyy"), Rewards.Points, Rewards.PunchCard, Rewards.Tier);
         }
     }
 }

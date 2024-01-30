@@ -27,6 +27,7 @@ using System.Web.UI.WebControls;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Web.UI.WebControls.WebParts;
+using System.Xml.Linq;
 
 namespace T02_Group01_PRG2Assignment
 {
@@ -179,6 +180,10 @@ namespace T02_Group01_PRG2Assignment
                         Console.WriteLine("Thank you for using Ice Cream Shop Management System. Good Bye!");
                         break;
                     }
+                    else
+                    {
+                        Console.WriteLine("Please Enter a number from 1-9.");
+                    }
                     Console.WriteLine();
                 }
                 catch (FormatException)
@@ -202,7 +207,7 @@ namespace T02_Group01_PRG2Assignment
      */
         static void DisplayMenu()
         {
-            Console.WriteLine("---------------------------- Ice Cream Shop Management System ----------------------------");
+            Console.WriteLine("============================ Ice Cream Shop Management System ============================");
             Console.WriteLine("1) List all customers");
             Console.WriteLine("2) List all current orders");
             Console.WriteLine("3) Register a new customer");
@@ -213,7 +218,7 @@ namespace T02_Group01_PRG2Assignment
             Console.WriteLine("8) Display monthly charged amounts breakdown & total charged amounts for the year");
             Console.WriteLine("9) Convert from SGD to specified Currency");
             Console.WriteLine("0) Exit");
-            Console.WriteLine("------------------------------------------------------------------------------------------");
+            Console.WriteLine("==========================================================================================");
             Console.Write("Enter an option: ");
         }
 
@@ -246,7 +251,7 @@ namespace T02_Group01_PRG2Assignment
         * @brief    To read in Orders.csv and initialise orders data
         * @param    To store orders data in static variables declared in Global class
         * @return   
-        * @creator  Raeanne
+        * @creator  Jeffrey & Raeanne
         */
         static void InitialiseOrdersData(List<Order> orderList, Dictionary<string, Customer> customers, Dictionary<string, float> flavourMenuDict)
         {
@@ -489,7 +494,7 @@ namespace T02_Group01_PRG2Assignment
         * @brief    To read in Flavours.csv and initialise flavours data (name and cost)
         * @param    To store flavours data in static variables declared in Global class
         * @return   
-        * @creator  Raeanne
+        * @creator  Jeffrey & Raeanne
         */
         static void InitialiseFlavourMenu(Dictionary<string, float> flavourMenuDict)
         {
@@ -512,7 +517,7 @@ namespace T02_Group01_PRG2Assignment
         * @brief    To read in Toppings.csv and initialise topping data (name, cost)
         * @param    To store topping data in static variables declared in Global class 
         * @return   
-        * @creator  Raeanne
+        * @creator  Jeffrey & Raeanne
         */
         static void InitialiseToppingMenu(Dictionary<string, float> toppingMenuDict)
         {
@@ -531,12 +536,12 @@ namespace T02_Group01_PRG2Assignment
             }
         }
 
-         /**
-         * @brief   To read in Options.csv and initialise option data
-         * @param   To store option data in static variables declared in Global class 
-         * @return  
-         * @creator Raeanne
-         */
+        /**
+        * @brief   To read in Options.csv and initialise option data
+        * @param   To store option data in static variables declared in Global class 
+        * @return  
+        * @creator Jeffrey & Raeanne
+        */
         static void InitialiseOptionMenu(List<float[]>cupPriceMenu, List<float[]> conePriceMenu, List<String[]> wafflePriceMenu)
         {
             int optionIdx = 0;
@@ -588,11 +593,17 @@ namespace T02_Group01_PRG2Assignment
         */
         static void ListAllCustomers(Dictionary<string, Customer> customers)
         {
+            // Display Header
+            Console.WriteLine(string.Format("+-{0,-10}-+-{1,-15}-+-{2,-14}-+-{3,-7}-+-{4,-6}-+-{5, -6}-+", "----------", "---------------", "--------------", "-------", "------", "------------"));
+            Console.WriteLine(string.Format("| {0,-10} | {1,-15} | {2,-14} | {3,-7} | {4,-6} | {5, -12} |", "Member ID", "Name", "Birthday", "Points", "Punch", "Tier"));
+            Console.WriteLine(string.Format("+-{0,-10}-+-{1,-15}-+-{2,-14}-+-{3,-7}-+-{4,-6}-+-{5, -6}-+", "----------", "---------------", "--------------", "-------", "------", "------------"));
+
             // Iterating each value in the customers dictionary and displaying it
             foreach (Customer customer in customers.Values)
             {
                 Console.WriteLine(customer.ToString());
             }
+            Console.WriteLine(string.Format("+-{0,-10}-+-{1,-15}-+-{2,-14}-+-{3,-7}-+-{4,-6}-+-{5, -6}-+", "----------", "---------------", "--------------", "-------", "------", "------------"));
             Console.WriteLine();
             Console.WriteLine();
         }
@@ -605,7 +616,7 @@ namespace T02_Group01_PRG2Assignment
          */
         static void ListAllGoldRegOrders(Queue<Order> goldQueue, Queue<Order> ordinaryQueue)
         {
-            Console.WriteLine("************* Gold Members Queue *************");
+            Console.WriteLine("============= Gold Members Queue ================");
 
             foreach (Order tmpOrder in goldQueue)
             {
@@ -622,7 +633,7 @@ namespace T02_Group01_PRG2Assignment
             Console.WriteLine();
             Console.WriteLine();
 
-            Console.WriteLine("************* Regular Members Queue *************");
+            Console.WriteLine("============= Regular Members Queue =============");
             foreach (Order tmpOrder in ordinaryQueue)
             {
                 Console.WriteLine($"Order Time: {tmpOrder.TimeReceived}");
@@ -655,19 +666,28 @@ namespace T02_Group01_PRG2Assignment
                 // Ensure customer name cannot have comma to prevent user from tampering with CSV
                 try
                 {
-                    Console.Write("Enter new customer Name: ");
+                    Console.Write("Enter new customer Name (Less than 12 Characters): ");
                     name = Console.ReadLine();
+                    bool isAlphabetic = Regex.IsMatch(name, @"^[a-zA-Z]+$");
                     //To prevent people from exploiting how csv works
-                    if (name.Contains(','))
+                    if (!isAlphabetic)
                     {
                         throw new ArgumentException();
+                    }
+                    if(name.Length >12)
+                    {
+                        throw new InvalidOperationException();
                     }
                     Console.WriteLine();
                     break;
                 }
                 catch (ArgumentException)
                 {
-                    Console.WriteLine("Name must not contain ','");
+                    Console.WriteLine("Name can only be contain alphabets");
+                }
+                catch (InvalidOperationException)
+                {
+                    Console.WriteLine("Name must be less than 12 Characters");
                 }
                 catch (Exception e)
                 {
@@ -685,8 +705,12 @@ namespace T02_Group01_PRG2Assignment
                 // Ensure Member ID is an interger and is Unique
                 try
                 {
-                    Console.Write("Enter new customer Member ID (Must be an Integer): ");
+                    Console.Write("Enter new customer Member ID (Must be a 6-digit Integer): ");
                     memberID = Convert.ToInt32(Console.ReadLine());
+                    if (!(memberID > 0 && memberID >= 100000 && memberID <= 999999))
+                    {
+                        throw new FormatException();
+                    }
                     using (StreamReader sr = new StreamReader("customers.csv"))
                     {
                         sr.ReadLine();
@@ -705,7 +729,7 @@ namespace T02_Group01_PRG2Assignment
                 }
                 catch (FormatException)
                 {
-                    Console.WriteLine("Member ID has to be an Integer");
+                    Console.WriteLine("Member ID must be a 6 Digits and Positive Integer");
                     Console.WriteLine();
                 }
                 catch (ArgumentException)
@@ -741,17 +765,27 @@ namespace T02_Group01_PRG2Assignment
                     }
 
                     dob = Convert.ToDateTime(dobBeforeCheck);
-                    Console.WriteLine();
+
+                    if (dob > DateTime.Today)
+                    {
+                        throw new InvalidOperationException();
+                    }
+                        Console.WriteLine();
                     break;
                 }
                 catch (ArgumentException)
                 {
 
-                    Console.WriteLine("Date of Birth must be in the following Format: dd/MM/yyyy"); ;
+                    Console.WriteLine("Date of Birth a valid date following the format: dd/MM/yyyy\n"); ;
+                }
+                catch (InvalidOperationException)
+                {
+                    Console.WriteLine("Date of Birth must not be later than today.\n");
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
+                    Console.WriteLine();
                 }
 
             }
@@ -1426,10 +1460,8 @@ namespace T02_Group01_PRG2Assignment
                         currentCustomer = customer;
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    Console.WriteLine(e.Message);
-                    Console.WriteLine();
                     continue;
                 }
             }
@@ -1712,8 +1744,6 @@ namespace T02_Group01_PRG2Assignment
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
-                    Console.WriteLine();
                     continue;
                 }
             }
