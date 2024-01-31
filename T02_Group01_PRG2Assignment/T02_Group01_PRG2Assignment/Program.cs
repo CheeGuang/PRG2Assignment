@@ -28,6 +28,8 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Web.UI.WebControls.WebParts;
 using System.Xml.Linq;
+using System.Net;
+using System.Net.Mail;
 
 namespace T02_Group01_PRG2Assignment
 {
@@ -35,7 +37,7 @@ namespace T02_Group01_PRG2Assignment
      * @brief   Static class to hold all static variables to be accessed by all other object classes
      * @param   
      * @return  
-     * @creator Raeanne
+     * @creator Zou Ruining, Raeanne
      */
     static class Global 
     {
@@ -216,7 +218,7 @@ namespace T02_Group01_PRG2Assignment
             Console.WriteLine("6) Modify order details");
             Console.WriteLine("7) Process an order and checkout");
             Console.WriteLine("8) Display monthly charged amounts breakdown & total charged amounts for the year");
-            Console.WriteLine("9) Convert from SGD to specified Currency");
+            Console.WriteLine("9) Process an order, checkout with Foreign Currency and Send Confirmation Email");
             Console.WriteLine("0) Exit");
             Console.WriteLine("==========================================================================================");
             Console.Write("Enter an option: ");
@@ -226,7 +228,7 @@ namespace T02_Group01_PRG2Assignment
         * @brief    To read in customers.csv and initialise customer data
         * @param    To store customer data in static variables declared in Global class
         * @return   
-        * @creator  Jeffrey
+        * @creator  Lee Guang Le, Jeffrey
         */
         static void InitialiseCustomersData(Dictionary<string, Customer> customers)
         {
@@ -251,7 +253,7 @@ namespace T02_Group01_PRG2Assignment
         * @brief    To read in Orders.csv and initialise orders data
         * @param    To store orders data in static variables declared in Global class
         * @return   
-        * @creator  Jeffrey & Raeanne
+        * @creator  Lee Guang Le, Jeffrey & Zou Ruining, Raeanne
         */
         static void InitialiseOrdersData(List<Order> orderList, Dictionary<string, Customer> customers, Dictionary<string, float> flavourMenuDict)
         {
@@ -494,7 +496,7 @@ namespace T02_Group01_PRG2Assignment
         * @brief    To read in Flavours.csv and initialise flavours data (name and cost)
         * @param    To store flavours data in static variables declared in Global class
         * @return   
-        * @creator  Jeffrey & Raeanne
+        * @creator  Lee Guang Le, Jeffrey & Zou Ruining, Raeanne
         */
         static void InitialiseFlavourMenu(Dictionary<string, float> flavourMenuDict)
         {
@@ -517,7 +519,7 @@ namespace T02_Group01_PRG2Assignment
         * @brief    To read in Toppings.csv and initialise topping data (name, cost)
         * @param    To store topping data in static variables declared in Global class 
         * @return   
-        * @creator  Jeffrey & Raeanne
+        * @creator  Lee Guang Le, Jeffrey & Zou Ruining, Raeanne
         */
         static void InitialiseToppingMenu(Dictionary<string, float> toppingMenuDict)
         {
@@ -540,7 +542,7 @@ namespace T02_Group01_PRG2Assignment
         * @brief   To read in Options.csv and initialise option data
         * @param   To store option data in static variables declared in Global class 
         * @return  
-        * @creator Jeffrey & Raeanne
+        * @creator Lee Guang Le, Jeffrey & Zou Ruining, Raeanne
         */
         static void InitialiseOptionMenu(List<float[]>cupPriceMenu, List<float[]> conePriceMenu, List<String[]> wafflePriceMenu)
         {
@@ -589,7 +591,7 @@ namespace T02_Group01_PRG2Assignment
         * @brief    Q1 list all customers
         * @param    Dictionary of all customer data
         * @return   
-        * @creator  Jeffrey
+        * @creator  Lee Guang Le, Jeffrey
         */
         static void ListAllCustomers(Dictionary<string, Customer> customers)
         {
@@ -612,7 +614,7 @@ namespace T02_Group01_PRG2Assignment
          * @brief   Q2 List all orders in Gold Queue and Regular Queue
          * @param   Sorted queues by membership
          * @return  
-         * @creator Raeanne
+         * @creator Zou Ruining, Raeanne
          */
         static void ListAllGoldRegOrders(Queue<Order> goldQueue, Queue<Order> ordinaryQueue)
         {
@@ -655,7 +657,7 @@ namespace T02_Group01_PRG2Assignment
         * @brief    Q3 Register a new customer
         * @param    Dictionary of all customer data
         * @return
-        * @creator  Jeffrey
+        * @creator  Lee Guang Le, Jeffrey
         */
         static Customer RegisterCustomer(Dictionary<string,Customer> customers)
         {
@@ -813,7 +815,7 @@ namespace T02_Group01_PRG2Assignment
         * @brief    Q4a To create a customer's order
         * @param     
         * @return   
-        * @creator  Jeffrey
+        * @creator  Lee Guang Le, Jeffrey
         */
         static void CreateOrder(Dictionary<string, Customer> customers, Queue<Order> goldQueue, Queue<Order> ordinaryQueue)
         {
@@ -885,7 +887,7 @@ namespace T02_Group01_PRG2Assignment
         * @brief    Q5 To display selected customer's order
         * @param    List of all customers to be printed on console for customer's reference & display selected customer's order
         * @return
-        * @creator  Raeanne
+        * @creator  Zou Ruining, Raeanne
         */
         static void DisplayCustomerOrder(Dictionary<string, Customer> customers)
         {
@@ -979,7 +981,7 @@ namespace T02_Group01_PRG2Assignment
         * @brief    Q6 To handle the modification of order details
         * @param    List of all customers to be printed on console for customer's reference & update selected customer's order
         * @return
-        * @creator  Raeanne
+        * @creator  Zou Ruining, Raeanne
         */
         static void ModifyOrderDetails(Dictionary<string, Customer> customers)
         {
@@ -998,7 +1000,6 @@ namespace T02_Group01_PRG2Assignment
                     memberId = Console.ReadLine();
 
                     // Check if memberId is in the list
-                    // NOTE: Check with Jeffrey if customers dict key can be int instead of string
                     if (!customers.ContainsKey(memberId))
                     {
                         // If memberId do not exist in customers dict
@@ -1429,7 +1430,7 @@ namespace T02_Group01_PRG2Assignment
         * @brief    (a)(i) Process an order and checkout
         * @param    Gold, Ordinary queue and Customers Dictionary
         * @return
-        * @creator  Jeffrey
+        * @creator  Lee Guang Le, Jeffrey
         */
         static void ProcessOrderAndCheckout(Queue<Order> goldQueue, Queue<Order> ordinaryQueue, Dictionary<string, Customer> customers)
         {
@@ -1636,7 +1637,7 @@ namespace T02_Group01_PRG2Assignment
         * @brief    (b) Display monthly charged amt breakdown
         * @param    Get all orders from customers to facilitate calculation of charges for display purpose
         * @return
-        * @creator  Raeanne
+        * @creator  Zou Ruining, Raeanne
         */
         static public void DisplayCharges(Dictionary<string, Customer> customers)
         {
@@ -1708,10 +1709,10 @@ namespace T02_Group01_PRG2Assignment
         }
 
         /**
-        * @brief    (c) Process order by paying with Foreign currency
+        * @brief    (c) Process order by paying with Foreign currency and Send Confirmation Email after order has been fulfilled
         * @param    Gold, Ordinary queue and Customers Dictionary
         * @return
-        * @creator  Jeffrey
+        * @creator  Lee Guang Le, Jeffrey
         */
 
         static void ProcessOrderAndCheckoutWithForeignCurrency(Queue<Order> goldQueue, Queue<Order> ordinaryQueue, Dictionary<string, Customer> customers)
@@ -1881,7 +1882,7 @@ namespace T02_Group01_PRG2Assignment
 
             Console.WriteLine();
             // Convert Total Bill to SGD and Display total amount
-            ConvertCurrency(totalBillSGD);
+            List<string> convertDetails = ConvertCurrency(totalBillSGD);
 
 
 
@@ -1890,7 +1891,9 @@ namespace T02_Group01_PRG2Assignment
             // Prompt user to press any key to make payment
             Console.Write("\nPress any key to make payment: ");
             Console.ReadLine();
-            Console.WriteLine("\nPayment successful! Enjoy your Ice-Cream and have a nice day!!");
+            Console.WriteLine("\nPayment successful!");
+
+
             // Increment the punch card for every ice cream in the order (if it goes above 10 just set it back down to 10)
             for (int i = 0; i < currentOrder.IceCreamList.Count; i++)
             {
@@ -1908,6 +1911,62 @@ namespace T02_Group01_PRG2Assignment
             // Mark the order as fulfilled with the current datetime
             currentOrder.TimeFulfilled = DateTime.Now;
 
+            // Prompt User if they want a confirmation email
+            while (true)
+            {
+                // Ensure sendConfirmationEmail is either y or n
+                try
+                {
+                    Console.Write("Would you like a confirmation email? (Y,N): ");
+                    var sendConfirmationEmail = Console.ReadLine().ToLower();
+                    if (!(new List<string> { "y", "n" }.Contains(sendConfirmationEmail)))
+                    {
+                        throw new InvalidDataException();
+                    }
+                    if (sendConfirmationEmail == "y")
+                    {
+                        // Ensure given Email Address is valid and exists
+                        while (true)
+                        {
+                            try
+                            {
+                                Console.Write("Enter your email: ");
+                                var receiverEmail = Console.ReadLine();
+
+                                // Sending Confirmation Email
+                                SendConfirmationEmail(receiverEmail, currentCustomer, currentOrder, currentPointCard, convertDetails);
+                                break;
+                            }
+                            catch (ArgumentException)
+                            {
+                                Console.WriteLine("Please a valid email address that exists.");
+                                Console.WriteLine();
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e.Message);
+                                Console.WriteLine();
+                                continue;
+                            }
+                        }
+
+                    }
+                    break;
+                }
+                catch (InvalidDataException)
+                {
+                    Console.WriteLine("Please enter either y or n");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine();
+                    continue;
+                }
+            }
+
+
+            Console.WriteLine("\nEnjoy your Ice-Cream and have a nice day!!");
             // Add this fulfilled order object to the customer’s order history
             currentCustomer.OrderHistory.Add(currentOrder);
 
@@ -1919,9 +1978,9 @@ namespace T02_Group01_PRG2Assignment
         * @brief    Convert from SGD to specified currency
         * @param    Amount of SGD to convert
         * @return
-        * @creator  Jeffrey
+        * @creator  Lee Guang Le, Jeffrey
         */
-        static public void ConvertCurrency(double amountSGD)
+        static List<string> ConvertCurrency(double amountSGD)
         {
             // Available country code 
             List<string> availableCurrencies = new List<string>() { "AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD", "AWG", "AZN", "BAM", "BBD", "BDT", "BGN", "BHD", "BIF", "BMD", "BND", "BOB", "BOV", "BRL", "BSD", "BTN", "BWP", "BYN", "BZD", "CAD", "CDF", "CHF", "CLF", "CLP", "CNY", "COP", "CRC", "CUC", "CUP", "CVE", "CZK", "DJF", "DKK", "DOP", "DZD", "EGP", "ERN", "ETB", "EUR", "FJD", "FKP", "GBP", "GEL", "GHS", "GIP", "GMD", "GNF", "GTQ", "GYD", "HKD", "HNL", "HRK", "HTG", "HUF", "IDR", "ILS", "INR", "IQD", "IRR", "ISK", "JMD", "JOD", "JPY", "KES", "KGS", "KHR", "KMF", "KPW", "KRW", "KWD", "KYD", "KZT", "LAK", "LBP", "LKR", "LRD", "LSL", "LTL", "LVL", "LYD", "MAD", "MDL", "MGA", "MKD", "MMK", "MNT", "MOP", "MRO", "MUR", "MVR", "MWK", "MXN", "MYR", "MZN", "NAD", "NGN", "NIO", "NOK", "NPR", "NZD", "OMR", "PAB", "PEN", "PGK", "PHP", "PKR", "PLN", "PYG", "QAR", "RON", "RSD", "RUB", "RWF", "SAR", "SBD", "SCR", "SDG", "SEK", "SGD", "SHP", "SLL", "SOS", "SRD", "SSP", "STD", "SVC", "SYP", "SZL", "THB", "TJS", "TMT", "TND", "TOP", "TRY", "TTD", "TWD", "TZS", "UAH", "UGX", "USD", "UYU", "UZS", "VEF", "VND", "VUV", "WST", "XAF", "XCD", "XOF", "XPF", "YER", "ZAR", "ZMW", "ZWL" };
@@ -1974,13 +2033,14 @@ namespace T02_Group01_PRG2Assignment
             {
                 Console.WriteLine("API Call Unsuccessful.");
             }
+            return new List<string> { convertTo, convertedAmount.ToString("0.00") };
         }
 
         /**
         * @brief    Getting the Converted Amount by calling CurrencyBeacon's Convert API Endpoint
         * @param    Amount in SGD to convert and the country code to convert to
-        * @return
-        * @creator  Jeffrey
+        * @return   Returns result of the API call or -1 if its unsuccessful
+        * @creator  Lee Guang Le, Jeffrey
         */
         static public double GetConvertedAmount(double amount, string convertTo)
         {
@@ -2026,13 +2086,93 @@ namespace T02_Group01_PRG2Assignment
             }
             return -1;
         }
+
+        /**
+        * @brief    Send Confirmation email to receiver
+        * @param    Receiver's email address, customer Object, Order object, Point Card object and a List on Convert Details (Country Code and Converted Total Bill
+        * @return
+        * @creator  Lee Guang Le, Jeffrey
+        */
+        static public void SendConfirmationEmail(string receiverEmail, Customer customer, Order order, PointCard pointCard, List<string> convertDetails)
+        {
+            // Sender Email Details
+            string fromMail = "jeffreyleeprg2@gmail.com";
+            string fromPassword = "cuhmvmdqllulsucg";
+
+            // Initialising and configuring message object
+            MailMessage message = new MailMessage();
+            message.From = new MailAddress(fromMail);
+            message.Subject = "Ice-Cream Robot Successful Payment Confirmation";
+            try
+            {
+                message.To.Add(new MailAddress(receiverEmail));
+            }
+            catch (Exception)
+            {
+                throw new ArgumentException();
+            }
+            message.Body = $@"
+    <html>
+        <body>
+            <h1>Ice-Cream Robot Successful Payment Confirmation</h1>
+            <p>Dear {customer.Name},</p>
+            <p>Your recent order has been successfully processed and confirmed. Below are the details of your order:</p>
+        
+            <h2>Order Details</h2>
+            <ul>
+                <li>Order ID: {order.Id}</li>
+                <li>Order Received Time: {order.TimeReceived}</li>
+                <li>Order Fulfilled Time: {order.TimeFulfilled}</li>
+            </ul>
+        
+            <h2>Customer Information</h2>
+            <ul>
+                <li>Member ID: {customer.MemberId}</li>
+                <li>Date of Birth: {customer.Dob}</li>
+            </ul>
+        
+            <h2>PointCard Information</h2>
+            <ul>
+                <li>Total Points: {pointCard.Points}</li>
+                <li>Punch Card: {pointCard.PunchCard} punches</li>
+                <li>Membership Tier: {pointCard.Tier}</li>
+            </ul>
+        
+            <h2>Payment Details</h2>
+            <p>Total Bill Amount: {convertDetails[0]}${convertDetails[1]}</p>
+        
+            <p>Thank you for choosing Ice-Cream Robot! We hope you enjoy your ice cream and have a delightful experience with us.</p>
+            <p>If you have any questions or need further assistance, please don't hesitate to contact our support team at jeffreyleeprg2@gmail.com.</p>
+        
+            <p>Best regards,<br>Ice-Cream Robot Team</p>
+        </body>
+    </html>";
+
+            message.IsBodyHtml = true;
+
+            // Setting up Simple Mail Transfer Protocol client to send the Email
+            var smtpClient = new SmtpClient("smtp.gmail.com")
+            {
+                Port = 587,
+                Credentials = new NetworkCredential(fromMail, fromPassword),
+                EnableSsl = true,
+            };
+
+            // Sending Email
+            smtpClient.Send(message);
+
+            // Display COnfirmation Message
+            Console.WriteLine();
+            Console.WriteLine("Confirmation Email Sent!!");
+            Console.WriteLine();
+        }
     }
      
     /**
     * @brief    Created Classes to store Response from CurrencyBeacon's Convert API Endpoint
     * @param    
     * @return
-    * @creator  Jeffrey
+    * @creator  Lee Guang Le, Jeffrey
     */
     public class Rootobject
     {
