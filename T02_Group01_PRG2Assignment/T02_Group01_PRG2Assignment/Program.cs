@@ -1490,10 +1490,14 @@ namespace T02_Group01_PRG2Assignment
             {
                 try
                 {
-                    int currentCustomerOrderId = customer.CurrentOrder.Id;
-                    if (currentCustomerOrderId == currentOrder.Id)
-                    { 
-                        currentCustomer = customer;
+                    if (customer.CurrentOrder is Order)
+                    {
+                        int currentCustomerOrderId = customer.CurrentOrder.Id;
+                        if (currentCustomerOrderId == currentOrder.Id)
+                        {
+                            currentCustomer = customer;
+                            break;
+                        }
                     }
                 }
                 catch (Exception)
