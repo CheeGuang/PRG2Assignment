@@ -1991,14 +1991,6 @@ namespace T02_Group01_PRG2Assignment
                             {
                                 Console.Write("Enter your email: ");
                                 var receiverEmail = Console.ReadLine();
-                                // Define the regular expression pattern for a valid email address
-                                string pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
-
-                                // Use Regex.IsMatch to check if the email matches the pattern
-                                if(Regex.IsMatch(receiverEmail, pattern))
-                                {
-                                    throw new ArgumentException();
-                                }
 
                                 // Sending Confirmation Email
                                 SendConfirmationEmail(receiverEmail, currentCustomer, currentOrder, currentPointCard, convertDetails);
