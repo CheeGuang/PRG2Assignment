@@ -2182,7 +2182,7 @@ namespace T02_Group01_PRG2Assignment
         public string date { get; set; }
         public string from { get; set; }
         public string to { get; set; }
-        public int amount { get; set; }
+        public double amount { get; set; }
         public float value { get; set; }
     }
 
@@ -2198,7 +2198,7 @@ namespace T02_Group01_PRG2Assignment
         public string date { get; set; }
         public string from { get; set; }
         public string to { get; set; }
-        public int amount { get; set; }
+        public double amount { get; set; }
         public float value { get; set; }
     }
 
