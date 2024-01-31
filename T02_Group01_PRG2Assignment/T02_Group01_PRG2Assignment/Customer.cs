@@ -148,7 +148,6 @@ namespace T02_Group01_PRG2Assignment
                     {
                         Console.WriteLine(e.Message);
                         Console.WriteLine();
-                        continue;
                     }
                 }
 
@@ -224,7 +223,6 @@ namespace T02_Group01_PRG2Assignment
                         {
                             Console.WriteLine(e.Message);
                             Console.WriteLine();
-                            continue;
                         }
 
                     }
@@ -311,17 +309,17 @@ namespace T02_Group01_PRG2Assignment
                 else if (option.ToLower() == "cone")
                 {
                     // Ensure User enters y or n
-                    string isDipped;
+                    string isDippedInput;
                     while (true)
                     {
                         try
                         {
                             Console.Write("Do you want your cone Dipped in chocolate? (Y, N): ");
-                            isDipped = Console.ReadLine();
+                            isDippedInput = Console.ReadLine().ToLower();
 
-                            if (isDipped != "y" && isDipped != "n")
+                            if (isDippedInput != "y" && isDippedInput != "n")
                             {
-                                throw (new ArgumentException());
+                                throw new ArgumentException();
                             }
                             break;
                         }
@@ -334,19 +332,10 @@ namespace T02_Group01_PRG2Assignment
                         {
                             Console.WriteLine(e.Message);
                             Console.WriteLine();
-                            continue;
                         }
                     }
 
-
-                    if (isDipped == "y")
-                    {
-                        iceCreamOrdered = new Cone(scoops, flavours, toppings, true);
-                    }
-                    else
-                    {
-                        iceCreamOrdered = new Cone(scoops, flavours, toppings, false);
-                    }
+                    iceCreamOrdered = new Cone(scoops, flavours, toppings, isDippedInput == "y");
                 }
 
                 // Logic to create Waffle IceCream
@@ -406,7 +395,7 @@ namespace T02_Group01_PRG2Assignment
                 {
                     try
                     {
-                        Console.Write("Would like to add another ice cream to the order? (Y, N): ");
+                        Console.Write("Would you like to add another ice cream to the order? (Y, N): ");
                         answer = Console.ReadLine();
 
                         if (answer.ToLower() != "y" && answer.ToLower() != "n")
