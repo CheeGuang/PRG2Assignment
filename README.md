@@ -21,7 +21,7 @@ Technology Used:
 - Currency Beacon Foreign Currency Converter API
 - Simple Mail Transfer Protocol
 
-### Student 2 - Zou Ruining Raeanne (S10258772G)
+### Student 2 - Zou Ruining, Raeanne (S10258772G)
 
 #### Questions Done
 
