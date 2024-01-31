@@ -115,11 +115,12 @@ namespace T02_Group01_PRG2Assignment
                             }
                             else if (iceCreamOption == "waffle")
                             {
-                                Console.WriteLine("\nWaffle Flavour Menu: ");
-                                Console.WriteLine("[1] Original");
-                                Console.WriteLine("[2] Charcoal (+ $3)");
-                                Console.WriteLine("[3] Pandan (+ $3)");
-                                Console.WriteLine("[4] Red Velvet (+ $3)");
+                                // Print Waffle Flavour menu
+                                Console.WriteLine("\n======================== Waffle Flavour Menu ========================");
+                                foreach (string tmpWaffleFlav in Global.waffleFlavList)
+                                {
+                                    Console.WriteLine($"{tmpWaffleFlav}");
+                                };
 
                                 Console.Write("Which waffle flavour would you like: ");
                                 int waffleFlavourResponse = Convert.ToInt32(Console.ReadLine());
@@ -392,11 +393,10 @@ namespace T02_Group01_PRG2Assignment
                             else
                             {
                                 Waffle selectedOrder = (Waffle) selectedIceCream;
-                                string[] waffleFlavours = new string[] { "original", "charcoal", "pandan", "red velvet" };
 
                                 // Print Waffle Flavour menu
                                 Console.WriteLine("\n======================== Waffle Flavour Menu ========================");
-                                foreach(string tmpWaffleFlav in waffleFlavours) 
+                                foreach(string tmpWaffleFlav in Global.waffleFlavList) 
                                 {
                                     Console.WriteLine($"{tmpWaffleFlav}");
                                 }
@@ -404,7 +404,7 @@ namespace T02_Group01_PRG2Assignment
                                 Console.Write("Which flavour would you like to change your waffle flavour to: ");
                                 string waffleFlavIp = Console.ReadLine().ToLower();
 
-                                if (!waffleFlavours.Contains(waffleFlavIp.ToLower()))
+                                if (!Global.waffleFlavList.Contains(waffleFlavIp.ToLower()))
                                 {
                                     throw new ArgumentOutOfRangeException();
                                 }
@@ -468,7 +468,7 @@ namespace T02_Group01_PRG2Assignment
         }
         public override string ToString()
         {
-            return "\tID: " + id + "\tTime Received: " + timeReceived;
+            return "\tID: " + id + "\tTime Received: " + timeReceived.ToString("dd/MM/yyyy");
         }
     }
 }

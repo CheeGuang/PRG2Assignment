@@ -344,11 +344,10 @@ namespace T02_Group01_PRG2Assignment
                 else
                 {
                     string selectedWaffleFlavour;
-                    List<string> waffleFlavourAvailable = new List<string>() { "original", "red velvet", "charcoal", "pandan" };
 
                     // Displaying available waffle flavours
                     Console.WriteLine("\n=================== Waffle Flavour Menu ======================");
-                    foreach (string waffleFlavour in waffleFlavourAvailable)
+                    foreach (string waffleFlavour in Global.waffleFlavList)
                     {
                         string formattedWaffleFlavour = waffleFlavour.Substring(0, 1).ToUpper() + waffleFlavour.Substring(1).ToLower();
                         Console.WriteLine(formattedWaffleFlavour);
@@ -363,7 +362,7 @@ namespace T02_Group01_PRG2Assignment
                             Console.Write("Enter flavour of Waffle: ");
                             selectedWaffleFlavour = Console.ReadLine();
 
-                            if (!waffleFlavourAvailable.Contains(selectedWaffleFlavour.ToLower()))
+                            if (!Global.waffleFlavList.Contains(selectedWaffleFlavour.ToLower()))
                             {
                                 throw (new ArgumentException());
                             }

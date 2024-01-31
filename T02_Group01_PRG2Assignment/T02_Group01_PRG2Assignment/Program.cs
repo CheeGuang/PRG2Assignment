@@ -50,6 +50,7 @@ namespace T02_Group01_PRG2Assignment
         public static int optPriceIdx = 1;
         public static int coneMenuDippedIdx = 2;
         public static int waffleMenuFlavorIdx = 2;
+        public static List<string> waffleFlavList = new List<string>();
         public static Dictionary<int, Order> orderDict = new Dictionary<int, Order>(); 
         public static void DisplayOrder(IceCream iceCream)
         {
@@ -62,7 +63,7 @@ namespace T02_Group01_PRG2Assignment
             int toppingCounter = 0;
             if (iceCream.Toppings.Count > 0)
             {
-                Console.Write("\nToppings: ");
+                Console.Write("Toppings: ");
                 foreach (Topping tmpTopping in iceCream.Toppings)
                 {
 
@@ -74,8 +75,8 @@ namespace T02_Group01_PRG2Assignment
                         Console.Write(", ");
                     }
                 }
-                Console.WriteLine();
             }
+            Console.WriteLine();
         }
     }
 
@@ -97,6 +98,14 @@ namespace T02_Group01_PRG2Assignment
 
             // Initialising Options ====================================================
             InitialiseOptionMenu(Global.cupPriceMenu, Global.conePriceMenu, Global.wafflePriceMenu);
+
+            //Initialising Waffle Flavours =============================================
+            foreach(string[] tmpWaffleComb in Global.wafflePriceMenu)
+            {
+                if (!Global.waffleFlavList.Contains(tmpWaffleComb[Global.waffleMenuFlavorIdx].ToLower())){
+                    Global.waffleFlavList.Add(tmpWaffleComb[Global.waffleMenuFlavorIdx].ToLower());
+                }
+            }
 
             // Initialising Orders =====================================================
             List<Order> orderList = new List<Order>();
@@ -589,7 +598,7 @@ namespace T02_Group01_PRG2Assignment
                     }else if (lineDetail[optionIdx].ToLower() == "waffle")
                     {
                         //flavours can only be stored as string
-                        String[] wScoopsPriceArray = new String[] { lineDetail[scoopsIdx], lineDetail[costIdx], lineDetail[waffleFlavourIdx].ToLower() };
+                        string[] wScoopsPriceArray = new string[] { lineDetail[scoopsIdx], lineDetail[costIdx], lineDetail[waffleFlavourIdx].ToLower() };
                         wafflePriceMenu.Add(wScoopsPriceArray);
                     }
 
@@ -1104,7 +1113,8 @@ namespace T02_Group01_PRG2Assignment
                                     {
                                         throw new ArgumentOutOfRangeException();
                                     }
-                                    selectedCustomer.CurrentOrder.ModifyIceCream(selectedIceCreamIdx);
+
+                                    selectedCustomer.CurrentOrder.ModifyIceCream(selectedIceCreamIdx - 1);
                                     break;
                                 }
                                 catch (FormatException)
@@ -1187,9 +1197,16 @@ namespace T02_Group01_PRG2Assignment
                                     }
                                     else if (optionIp == "waffle")
                                     {
+                                        // Print Waffle Flavour menu
+                                        Console.WriteLine("\n======================== Waffle Flavour Menu ========================");
+                                        foreach (string tmpWaffleFlav in Global.waffleFlavList)
+                                        {
+                                            Console.WriteLine($"{tmpWaffleFlav}");
+                                        }
+
                                         Waffle nWaffle = new Waffle();
 
-                                        Console.Write("Which waffle flavour would you like: ");
+                                        Console.Write("\nWhich waffle flavour would you like: ");
                                         string waffleFlavIp = Console.ReadLine().ToLower();
 
                                         if (waffleFlavIp == "original")
