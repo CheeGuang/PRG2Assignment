@@ -28,7 +28,9 @@ namespace T02_Group01_PRG2Assignment
 
         public string Tier
         {
-            get { return tier; }
+            get {
+                string formattedTier = tier.Substring(0, 1).ToUpper() + tier.Substring(1).ToLower(); 
+                return formattedTier; }
             set { tier = value; }
         }
         public PointCard()

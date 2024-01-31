@@ -216,7 +216,7 @@ namespace T02_Group01_PRG2Assignment
                                     float price = 0;
                                     while (!Global.flavourMenuDict.TryGetValue(flavourIp, out price))
                                     {
-                                        Console.WriteLine("You have entered an invalid flavour. Please try again.");
+                                        Console.WriteLine("You have entered an invalid flavour. Please try again");
                                         Console.Write($"Flavour {i}: ");
                                         flavourIp = Console.ReadLine();
                                     }
@@ -256,7 +256,7 @@ namespace T02_Group01_PRG2Assignment
                                 //Check if flavour is valid 
                                 while (!Global.flavourMenuDict.Keys.Contains(flavourIp))
                                 {
-                                    Console.WriteLine("You have entered an invalid flavour. Please try again.");
+                                    Console.WriteLine("You have entered an invalid flavour. Please try again");
                                     Console.Write($"New Flavour {i}: ");
                                     flavourIp = Console.ReadLine().ToLower();
                                 }
@@ -316,7 +316,7 @@ namespace T02_Group01_PRG2Assignment
 
                             if (toppingNum == 0)
                             {
-                                Console.WriteLine("You have removed all toppings from your ice cream.");
+                                Console.WriteLine("You have removed all toppings from your ice cream");
                                 break;
                             } 
                             else if (toppingNum < 0 || toppingNum > 4)
@@ -333,7 +333,7 @@ namespace T02_Group01_PRG2Assignment
                                 //Check if flavour is valid 
                                 while (!Global.toppingMenuDict.Keys.Contains(toppingIp))
                                 {
-                                    Console.WriteLine("You have entered an invalid topping. Please try again.");
+                                    Console.WriteLine("You have entered an invalid topping. Please try again");
                                     Console.Write($"New Topping {i}: ");
                                     toppingIp = Console.ReadLine().ToLower();
                                 }
@@ -354,7 +354,7 @@ namespace T02_Group01_PRG2Assignment
                             // Check if current order ice cream is a Cone
                             if (selectedIceCream.Option.ToLower() != "cone")
                             {
-                                Console.WriteLine("Sorry! Your selected option must be a cone to pick this option. \nNo changes will be made.");
+                                Console.WriteLine("Sorry! Your selected option must be a cone to pick this option. \nNo changes will be made");
                                 break;
                             }
                             else
@@ -386,7 +386,7 @@ namespace T02_Group01_PRG2Assignment
                             // Check if selectedIceCream is a waffle
                             if (selectedIceCream.Option.ToLower() != "waffle")
                             {
-                                Console.WriteLine("Sorry! Your selected option must be a waffle to pick this option. \nNo changes will be made.");
+                                Console.WriteLine("Sorry! Your selected option must be a waffle to pick this option. \nNo changes will be made");
                                 break;
                             }
                             else
@@ -410,7 +410,7 @@ namespace T02_Group01_PRG2Assignment
                                 }
                                 else if (waffleFlavIp == selectedOrder.WaffleFlavour.ToLower())
                                 {
-                                    Console.WriteLine("You have selected the same option. No changes will be made.");
+                                    Console.WriteLine("You have selected the same option. No changes will be made");
                                     break;
                                 }
                                 else
@@ -437,11 +437,11 @@ namespace T02_Group01_PRG2Assignment
                 }
                 catch (ArgumentOutOfRangeException)
                 {
-                    Console.WriteLine("You have entered an invalid option. No changes have been made.");
+                    Console.WriteLine("You have entered an invalid option. No changes have been made");
                 }
                 catch
                 {
-                    Console.WriteLine("This is an invalid input. Please re-enter a valid menu option.");
+                    Console.WriteLine("This is an invalid input. Please re-enter a valid menu option");
                 }
             }
             

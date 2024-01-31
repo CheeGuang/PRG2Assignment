@@ -107,14 +107,13 @@ namespace T02_Group01_PRG2Assignment
                     }
                     catch (ArgumentException)
                     {
-                        Console.WriteLine("Choose between Cup, Cone or Waffle.");
+                        Console.WriteLine("Choose between Cup, Cone or Waffle");
                         Console.WriteLine();
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
-                        Console.WriteLine(e.Message);
+                        Console.WriteLine("Invalid Input, Please try again");
                         Console.WriteLine();
-                        continue;
                     }
                 }
 
@@ -136,17 +135,17 @@ namespace T02_Group01_PRG2Assignment
                     }
                     catch (ArgumentException)
                     {
-                        Console.WriteLine("Number of Scoops must be between 1 and 3.");
+                        Console.WriteLine("Number of Scoops must be between 1 and 3");
                         Console.WriteLine();
                     }
                     catch (FormatException)
                     {
-                        Console.WriteLine("Please enter a number between 1 and 3.");
+                        Console.WriteLine("Please enter a number between 1 and 3");
                         Console.WriteLine();
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
-                        Console.WriteLine(e.Message);
+                        Console.WriteLine("Invalid Input, Please try again");
                         Console.WriteLine();
                     }
                 }
@@ -173,7 +172,8 @@ namespace T02_Group01_PRG2Assignment
                 Console.WriteLine("Available Regular Flavours:");
                 foreach (string flavour in regularFlavours)
                 {
-                    Console.WriteLine(flavour);
+                    string formattedFlavour = flavour.Substring(0, 1).ToUpper() + flavour.Substring(1).ToLower();
+                    Console.WriteLine(formattedFlavour);
                 }
                 Console.WriteLine();
 
@@ -181,7 +181,8 @@ namespace T02_Group01_PRG2Assignment
                 Console.WriteLine("Available Premium Flavours:");
                 foreach (string flavour in premiumFlavours)
                 {
-                    Console.WriteLine(flavour);
+                    string formattedFlavour = flavour.Substring(0, 1).ToUpper() + flavour.Substring(1).ToLower();
+                    Console.WriteLine(formattedFlavour);
                 }
                 Console.WriteLine();
 
@@ -216,12 +217,12 @@ namespace T02_Group01_PRG2Assignment
                         }
                         catch (ArgumentException)
                         {
-                            Console.WriteLine("Flavour unavailable.");
+                            Console.WriteLine("Flavour unavailable");
                             Console.WriteLine();
                         }
-                        catch (Exception e)
+                        catch (Exception)
                         {
-                            Console.WriteLine(e.Message);
+                            Console.WriteLine("Invalid Input, Please try again");
                             Console.WriteLine();
                         }
 
@@ -250,7 +251,8 @@ namespace T02_Group01_PRG2Assignment
                 // Displaying available Toppings
                 foreach (string topping in toppingsAvailable)
                 {
-                    Console.WriteLine(topping);
+                    string formattedTopping = topping.Substring(0, 1).ToUpper() + topping.Substring(1).ToLower();
+                    Console.WriteLine(formattedTopping);
                 }
                 Console.WriteLine();
 
@@ -282,12 +284,12 @@ namespace T02_Group01_PRG2Assignment
                         }
                         catch (ArgumentException)
                         {
-                            Console.WriteLine("Topping unavailable.");
+                            Console.WriteLine("Topping unavailable");
                             Console.WriteLine();
                         }
-                        catch (Exception e)
+                        catch (Exception)
                         {
-                            Console.WriteLine(e.Message);
+                            Console.WriteLine("Invalid Input, Please try again");
                             Console.WriteLine();
                             continue;
                         }
@@ -314,7 +316,7 @@ namespace T02_Group01_PRG2Assignment
                     {
                         try
                         {
-                            Console.Write("Do you want your cone Dipped in chocolate? (Y, N): ");
+                            Console.Write("Do you want your cone Dipped in chocolate? (y/n): ");
                             isDippedInput = Console.ReadLine().ToLower();
 
                             if (isDippedInput != "y" && isDippedInput != "n")
@@ -326,11 +328,11 @@ namespace T02_Group01_PRG2Assignment
                         catch (ArgumentException)
                         {
 
-                            Console.WriteLine("Enter either 'y' or 'n'."); ;
+                            Console.WriteLine("Enter either 'y' or 'n'"); ;
                         }
-                        catch (Exception e)
+                        catch (Exception)
                         {
-                            Console.WriteLine(e.Message);
+                            Console.WriteLine("Invalid Input, Please try again");
                             Console.WriteLine();
                         }
                     }
@@ -345,10 +347,11 @@ namespace T02_Group01_PRG2Assignment
                     List<string> waffleFlavourAvailable = new List<string>() { "original", "red velvet", "charcoal", "pandan" };
 
                     // Displaying available waffle flavours
-                    Console.WriteLine("=================== Waffle Flavour Menu ======================");
+                    Console.WriteLine("\n=================== Waffle Flavour Menu ======================");
                     foreach (string waffleFlavour in waffleFlavourAvailable)
                     {
-                        Console.WriteLine(waffleFlavour);
+                        string formattedWaffleFlavour = waffleFlavour.Substring(0, 1).ToUpper() + waffleFlavour.Substring(1).ToLower();
+                        Console.WriteLine(formattedWaffleFlavour);
                     }
                     Console.WriteLine();
 
@@ -370,11 +373,11 @@ namespace T02_Group01_PRG2Assignment
                         catch (ArgumentException)
                         {
 
-                            Console.WriteLine("Enter a valid Waffle Flavour."); ;
+                            Console.WriteLine("Enter a valid Waffle Flavour"); ;
                         }
-                        catch (Exception e)
+                        catch (Exception)
                         {
-                            Console.WriteLine(e.Message);
+                            Console.WriteLine("Invalid Input, Please try again");
                             Console.WriteLine();
                             continue;
                         }
@@ -395,7 +398,7 @@ namespace T02_Group01_PRG2Assignment
                 {
                     try
                     {
-                        Console.Write("Would you like to add another ice cream to the order? (Y, N): ");
+                        Console.Write("Would you like to add another ice cream to the order? (y/n): ");
                         answer = Console.ReadLine();
 
                         if (answer.ToLower() != "y" && answer.ToLower() != "n")
@@ -407,13 +410,12 @@ namespace T02_Group01_PRG2Assignment
                     catch (ArgumentException)
                     {
 
-                        Console.WriteLine("Enter either 'Y' or 'N'."); ;
+                        Console.WriteLine("Enter either 'y' or 'n'"); ;
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
-                        Console.WriteLine(e.Message);
+                        Console.WriteLine("Invalid Input, Please try again");
                         Console.WriteLine();
-                        continue;
                     }
                 }
 

@@ -29,7 +29,8 @@ namespace T02_Group01_PRG2Assignment
 
         public override string ToString()
         {
-            return Type;
+            string formattedType = Type.Substring(0, 1).ToUpper() + Type.Substring(1).ToLower();
+            return formattedType;
         }
     }
 }

@@ -58,7 +58,8 @@ namespace T02_Group01_PRG2Assignment
         }
         public override string ToString()
         {
-            return base.ToString() + waffleFlavour + " Waffle";
+            string formattedWaffleFlavour = waffleFlavour.Substring(0, 1).ToUpper() + waffleFlavour.Substring(1).ToLower();
+            return base.ToString() + formattedWaffleFlavour + " Waffle";
         }
     }
 }
