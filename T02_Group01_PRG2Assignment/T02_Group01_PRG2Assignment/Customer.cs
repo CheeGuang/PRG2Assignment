@@ -196,10 +196,10 @@ namespace T02_Group01_PRG2Assignment
                     {
                         try
                         {
-                            Console.Write("Enter the Flavour you want: ");
-                            string selectedFlavour = Console.ReadLine();
+                            Console.Write($"Enter Scoop {i + 1} Flavour: ");
+                            string selectedFlavour = Console.ReadLine().ToLower();
 
-                            if (!regularFlavours.Contains(selectedFlavour.ToLower()) && !premiumFlavours.Contains(selectedFlavour.ToLower()))
+                            if (!regularFlavours.Contains(selectedFlavour) && !premiumFlavours.Contains(selectedFlavour))
                             {
                                 throw new ArgumentException();
                             }
@@ -262,7 +262,7 @@ namespace T02_Group01_PRG2Assignment
                     {
                         try
                         {
-                            Console.Write("Enter the Toppings you want (Enter 'X' to Exit): ");
+                            Console.Write($"Enter Topping {i + 1} (Enter 'X' to Exit): ");
                             selectedTopping = Console.ReadLine().ToLower();
 
                             // If selectedTopping == 'x', Exit.

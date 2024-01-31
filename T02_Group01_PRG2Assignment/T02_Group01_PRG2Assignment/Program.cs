@@ -58,9 +58,19 @@ namespace T02_Group01_PRG2Assignment
             {
                 Console.WriteLine(tmpFlavour.ToString());
             }
+
+            int toppingCounter = 0;
+            Console.Write("\nToppings: ");
             foreach (Topping tmpTopping in iceCream.Toppings)
             {
-                Console.WriteLine(tmpTopping.ToString());
+
+                Console.Write(tmpTopping.ToString());
+                toppingCounter ++;
+
+                if (toppingCounter < iceCream.Toppings.Count)
+                {
+                    Console.Write(", ");
+                }
             }
             Console.WriteLine();
         }
@@ -1027,7 +1037,12 @@ namespace T02_Group01_PRG2Assignment
 
             // Retrieve and display current order details of the selected customer
             Order selectedCustCurrentOrder = selectedCustomer.CurrentOrder;
-            Console.WriteLine(selectedCustCurrentOrder.ToString());
+
+            if (selectedCustCurrentOrder == null)
+            {
+                Console.WriteLine("You have no current order. Create one before you can modify.");
+                return; //Exit the function immediately
+            }
 
             // Print all Ice Cream associated with the current order
             for (int i=0; i < selectedCustCurrentOrder.IceCreamList.Count(); i++) 
